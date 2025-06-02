@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0.42-debian
+    environment:
+      MYSQL_USER: cuong
+      MYSQL_PASSWORD: 123
+      MYSQL_DATABASE: webfirst
+      MYSQL_ROOT_PASSWORD: 123456
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - '3306:3306'
+
+volumes:
+  mysql-data:
+
+  
+
+   
