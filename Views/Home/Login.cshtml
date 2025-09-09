@@ -3,12 +3,31 @@
 *@
 @{
 }
-<p>login</p>
-<form asp-controller="Home" asp-action="Home">
-    <label for="account">Account name</label>
-    <input type="text" name="account" />
-    <input type="text" name="password"/>
-    <input type="submit" value="Login"/>
-</form>
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Login</title>
+    </head>
+	<body>
+		<div class="container m-1 text-primary">
+		<p>login</p>
+		<form asp-controller="Home" asp-action="login" method="post">
+			<label for="account">Account name</label>
+			<input type="text" name="account" />
+			<input type="text" name="password" />
+			<input type="submit" value="Login" />
+		</form>
+		</div>
+		<script src="~/js/login.js">
+			
+		
+		</script>
+	</body>
+	</html>
+
+
 
 

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace firstWeb.Migrations
+namespace ManageCars.Migrations
 {
     /// <inheritdoc />
     public partial class intel : Migration

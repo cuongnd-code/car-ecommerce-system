@@ -1,0 +1,118 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+@model Car
+
+<div class="container mt-4">
+    <h2 class="text-primary">Car Profile</h2>
+    <hr />
+
+    <div class="row">
+     @*   <div class="col-md-4">
+            <img src="~/images/cars/@Model.Image"
+                 alt="@Model.Name"
+                 class="img-fluid rounded shadow" />
+        </div>*@
+        <div class="col-md-8">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th>Name</th>
+                        <td>@Model.Name</td>
+                    </tr>
+                    <tr>
+                        <th>Model</th>
+                        <td>@Model.Model</td>
+                    </tr>
+                    <tr>
+                        <th>Color</th>
+                        <td>@Model.Color</td>
+                    </tr>
+                    <tr>
+                        <th>Year</th>
+                        <td>@Model.Year</td>
+                    </tr>
+                    <tr>
+                        <th>Price</th>
+                        <td>@Model.Price?.ToString("C0")</td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <td>@Model.Description</td>
+                    </tr>
+                    <tr>
+                        <th>Category</th>
+                        <td>@(Model.Category?.Name ?? "Uncategorized")</td>
+                    </tr>
+                </tbody>
+            </table>
+            <a asp-controller="Car" asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+
+    <div>
+        <button class="deposit" value="@Model.Id">
+        Deposit
+        </button>
+
+
+         @if (!string.IsNullOrEmpty(ViewBag.Successful))
+         {
+             <div>@ViewBag.Successful</div>
+         }
+
+       
+
+    </div>
+
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+	});
+
+
+    
+
+   function depositCar(carId) {
+        fetch('/shop/deposit', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+                 'X-Requested-With': 'XMLHttpRequest'
+			},
+            body: JSON.stringify(carId) // cai nay tuy vao so luong
+		})
+            .then(res => {
+                if (res.status === 401) {
+                    alert("Bạn cần đăng nhập trước!");
+                    window.location.href = "/home/login";
+                    return null; 
+                }
+                return res.json(); // parse json
+            })
+            .then(data => {
+                console.log("data:", data);
+                alert(data.message);
+            })
+
+            .catch(error => {
+                console.error("Login error:", error);
+                alert("Lỗi: " + error.message);
+            });
+	}
+
+    document.querySelectorAll('.deposit').forEach(button => {   
+		button.addEventListener('click', function() {
+			depositCar(this.value);
+		});
+	});
+
+
+</script>

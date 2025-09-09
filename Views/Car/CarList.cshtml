@@ -1,0 +1,255 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	var years = Enumerable.Range(1950, DateTime.Now.Year - 1950 + 1).Reverse();
+
+}
+
+@model ManageCars.Models.ViewModel.CarViewModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Car List</title>
+	<script src="~/js/car-pagination.js"></script>
+</head>
+<body>
+	<div class="container m-1 text-primary">
+		<h2>Car List</h2>
+		<p>Here is the list of cars available in the system.</p>
+
+		<table class="car-table table table-primary table-hover">
+			<thead>
+				<tr>
+					<th>Car Img</th>
+					<th>Car Id</th>
+					<th>Car Name</th>
+					<th>Year</th>
+					<th>Type</th>
+					<th>Price</th>
+					<th>Deposit</th>
+
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody id="car-list-table">
+				<!-- Rows will be dynamically inserted here -->
+
+
+
+			</tbody>
+			
+		</table>
+
+		<nav id="">
+			<ul id="pagin" class="pagination pagin">
+			</ul>
+		</nav>
+	</div>
+
+
+	<div class="modal" id="car-edit-modal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+
+				<div class="modal-body car-edit-body">
+
+
+
+				</div>
+				<p>@ViewBag.SuccessMessage</p>
+
+
+			</div>
+
+		</div>
+
+	</div>
+	<script>
+
+
+		document.addEventListener('DOMContentLoaded', function () {
+			console.log("carlist"); // nên thấy dòng này nếu không có lỗi JS
+			CarList(1);
+
+			
+
+		});
+
+		function CarList(page) {
+			// Ensure the document is fully loaded before executing scripts
+			// JavaScript to handle the dynamic loading of car data and actions
+			// Fetch car data from the server and populate the table
+			fetch('/shop/car-list', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ _pageNumber: page, _pageSize: 3 })
+			})
+				.then(response => response.json())
+				.then(data => {
+
+					const table = document.querySelector('#car-list-table')
+					table.innerHTML = ''; // Clear existing rows
+					data.cars.forEach(car => {
+						const row = table.insertRow();
+						row.innerHTML = `
+													<tr>
+												<td><img src="/images/${car.image}" width="200" /></td>
+												<td>${car.id}</td>
+												<td>${car.name}</td>
+												<td>${car.year}</td>
+												<td>${car.type}</td>
+												<td>${car.price}</td>
+												<td>${car.deposit}</td>
+												<td>
+												<button class="editCarBtn btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#car-edit-modal" value="${car.id}">Edit</button>
+												<button class="deleteCarBtn"  value="${car.id}">Delete</button>
+												</td>
+												</tr>
+											`;
+					});
+
+					pagePagin(data.currentPage, data.totalPage);
+					document.querySelectorAll(".editCarBtn").forEach(button => {
+						button.addEventListener("click", function () {
+							editCar1(this.value);
+
+						})
+					})
+
+
+					// 👇 Gắn sự kiện sau khi nút đã được thêm vào DOM
+					document.querySelectorAll(".deleteCarBtn").forEach(button => {
+						button.addEventListener("click", function () {
+							deleteCar(this.value);
+						});
+					});
+				})
+				.catch(error => console.error('Error fetching car data:', error));
+		}
+
+
+
+		
+
+		function deleteCar(carId) {
+			console.log("delete");
+
+			// Function to delete a car by its ID
+			fetch(`/car/delete-car/${carId}`, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+				.then(res => res.json())
+				.then(data => {
+					alert(data.Message);
+				})
+				.then(() => {
+					// Refresh the car list after deletion
+					CarList();
+				}).catch(error => {
+					console.error('Error deleting car:', error);
+				});
+
+		}
+		function editCar1(carId) {
+	
+			console.log("edit");
+			fetch('/car/car-edit1', {
+				method: 'Post',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(carId)
+
+			})
+				.then(res => res.json())
+				.then(data => {
+				var body = document.querySelector(".car-edit-body")
+				body.innerHTML=`
+				<form action="/car/car-edit2" method="post" class="car-edit-form" enctype="multipart/form-data">
+			<label for="Name">Name</label>
+			<input id="Name" name="Name" class="form-control" value="${data.name}" />
+
+			<label for="Year">Year</label>
+									<select id="Year" name="Year"  class="form-control" class="form-control">
+				<option value="${data.year}">${data.year}</option>
+		@foreach (var y in years)
+		{
+				<option value="@y">@y</option>
+		}
+
+			</select>
+				<input id="Id" name="Id" class="form-control" value="${data.id}" readonly/>
+
+			<label for="Model">Model</label>
+			<input id="Model" name="Model" class="form-control" value="${data.model}" />
+
+			<label for="Color">Color</label>
+			<input id="Color" name="Color" class="form-control" value="${data.color}" />
+
+			<label for="Price">Price</label>
+			<input id="Price" name="Price" type="range" min="500" max="50000" value="${data.price}" />
+
+			<label for="CategoryId">Category</label>
+			<select id="CategoryId" name="CategoryId" class="form-control">
+				<option value="1" ${data.categoryId === 1 ? 'selected' : ''}>1 - Sedan</option>
+				<option value="2" ${data.categoryId === 2 ? 'selected' : ''}>2 - SUV</option>
+				<option value="3" ${data.categoryId === 3 ? 'selected' : ''}>3 - Truck</option>
+				<option value="4" ${data.categoryId === 4 ? 'selected' : ''}>4 - Coupe</option>
+				<option value="5" ${data.categoryId === 5 ? 'selected' : ''}>5 - Hatchback</option>
+			</select>
+
+			<label for="Image">Image</label>
+			<input id="Image" name="Image" type="file" class="form-control" />
+
+			<label for="Description">Description</label>
+			<input id="Description" name="Description" class="form-control" value="${data.description}" />
+
+			<input type="submit" class="form-control" />
+		</form>
+
+					
+
+				`
+					document.querySelector('.car-edit-form').addEventListener('submit', function (event) {
+						event.preventDefault();
+						const formData = new FormData(this);
+						editCar2(formData);
+					})
+
+				})
+
+		}
+
+		function editCar2(formData) {
+
+				fetch("/car/car-edit2", {
+					method: 'Post',
+
+				body: formData
+
+				})
+			.then(res => res.json())
+			.then(data => {
+					alert(data)
+				})
+
+				}
+			
+
+
+	</script>
+
+
+</body>
+</html>

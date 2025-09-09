@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace firstWeb.Controllers
+namespace ManageCars.Controllers
 {
     public class MovieController : Controller
     {

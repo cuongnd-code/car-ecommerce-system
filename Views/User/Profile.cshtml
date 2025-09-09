@@ -1,0 +1,66 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model Account
+
+
+<div class="container m-1 text-primary">
+	<h2>User Profile</h2>
+	<p>Here is your profile information.</p>
+
+	<table class="table table-primary table-hover">
+		<thead>
+			<tr>
+				<th>Field</th>
+				<th>Value</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Username</td>
+				<td>@Model.user.UserName</td>
+			</tr>
+			<tr>
+				<td>Email</td>
+				<td>@Model.user.address</td>
+			</tr>
+			<tr>
+				<td>Phone</td>
+				<td>@Model.user.phone</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="text-center">
+		<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".modal">Change</button>
+		<a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Back to Home</a>
+		</div>
+	<div class="modal" data-bs-backdrop="static">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1>Change</h1>
+					<button type="button" class="btn btn-danger btn-close" data-bs-dismiss="modal"></button>
+
+				</div>
+
+				<div class="modal-body">
+					<form asp-action="edit-profile" asp-controller="user" method="post">
+						<input asp-for="@Model.user.UserName" />
+						<input asp-for="@Model.user.address" />
+						<input asp-for="@Model.user.phone" />
+						<input type="submit" />
+					</form>
+				</div>
+
+				<div class="modal-footer">
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+	

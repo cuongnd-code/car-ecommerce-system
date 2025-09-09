@@ -1,0 +1,103 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model List<Car>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Shop</title>
+	<script src="~/js/car-pagination.js"></script>
+	<link rel="stylesheet" href="~/css/Shop.css">
+
+"
+		
+	</head>
+	<body>
+	<div id="" class="container-fluid p-0 w-100 border border-4 border-dark ">
+		
+		<div id="car-list-table" class="row d-flex justify-content-between border">
+
+		</div>
+
+		<div class="pagin"></div>
+	</div>
+
+
+	
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			console.log("shop"); // nên thấy dòng này nếu không có lỗi JS
+
+			CarShop(1); // Gọi hàm CarShop với trang đầu tiên
+		});
+
+		function CarShop(page) { 
+			// Ensure the document is fully loaded before executing scripts
+			// JavaScript to handle the dynamic loading of car data and actions
+			// Fetch car data from the server and populate the table
+			fetch('/shop/car-list', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ _pageNumber: page, _pageSize: 6 })
+			})
+				.then(response => response.json())
+				.then(data => {
+
+					const table = document.querySelector('#car-list-table')
+					table.innerHTML = ''; // Clear existing rows
+					data.cars.forEach(car => {
+						table.innerHTML += `
+														<div class="car-unit col-md-4 ">
+														<div>
+
+														<p>${car.id}</p>
+																<p>${car.name}</p>
+
+																<p>${car.type}</p>
+																<p>${car.price}</p>
+														<p>
+														</div>
+														<div>
+															<button class="" value="${car.id}">View</button>
+															<button class="" value="${car.id}">Rent</button>
+															<button class="btnBuyCar" value="${car.id}">Buy</button>
+														</div>
+														</div>
+														</div>
+													`;
+					});
+
+					pagePagin(data.currentPage, data.totalPage);
+					
+
+					document.querySelectorAll(".btnBuyCar").forEach(button => {
+						button.addEventListener("click", function() {
+							buyCar(this.value)
+						})
+						
+					})
+				})
+				.catch(error => console.error('Error fetching car data:', error));
+		}
+
+
+		function buyCar(carId){
+
+			window.location.href = `/shop/car/${carId}`; // Chuyển hướng đến trang deposit với ID xe
+			
+		}
+
+
+	</script>
+	</body>
+
+	
+</html>

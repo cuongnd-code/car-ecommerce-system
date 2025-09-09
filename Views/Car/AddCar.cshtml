@@ -1,0 +1,56 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+
+	var years = Enumerable.Range(1950, DateTime.Now.Year - 1950 + 1).Reverse();
+}
+
+
+
+@addTagHelper*, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper*, AuthorizingTagHelperApp.TagHelpers
+<p>Manager Car</p>
+
+@model ManageCars.Models.ViewModel.CarViewModel
+<form asp-controller="Car" asp-action="AddCar" method="post" enctype="multipart/form-data">
+	<label asp-for="Name" class="form-label"></label>
+	<input asp-for="Name" class="form-control" />
+	<label asp-for="Year"></label>
+	<select asp-for="Year" class="form-control">
+		<option value="">pick a year</option>
+		@foreach(var y in years)
+		{
+			<option value="@y"> @y</option>
+		}
+	</select>
+	<label asp-for="Model" class="form-label"></label>
+	<input asp-for="Model" class="form-control" />
+	<label asp-for="Color" class="form-label"></label>
+	<input asp-for="Color" class="form-control" />
+	<label asp-for="Price" class="form-label"></label>
+	<input asp-for="Price" type="range" min="500" max="50000"/>
+	<select asp-for="CategoryId" class="form-control">
+		<option value="">-- Chọn danh mục --</option>
+		<option value="1">1 - Sedan</option>
+		<option value="2">2 - SUV</option>
+		<option value="3">3 - Truck</option>
+		<option value="4">4 - Coupe</option>
+		<option value="5">5 - Hatchback</option>
+	</select>
+	<label asp-for="Image" class="form-label" ></label>
+	<input asp-for="Image" type="file" class="form-control" />
+	<label asp-for="Description" class="form-label"></label>
+	<input asp-for="Description" class="form-control" />
+
+	<input type="submit" class="form-control" />
+	<p>@ViewBag.ErrorMessage</p>
+	<p>@ViewBag.SuccessMessage</p>
+
+
+	</form>
+
+
+
+		
+	

@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using firstWeb.Models;
+using ManageCars.Models;
 
 #nullable disable
 
-namespace firstWeb.Migrations
+namespace ManageCars.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20250618163644_intel")]
