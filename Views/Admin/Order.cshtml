@@ -1,0 +1,482 @@
+﻿@{
+	Layout = "_AdminLayout";
+}
+
+
+
+
+<!-- Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Main Content -->
+<div class="main-content" id="main-content">
+	<nav class="navbar navbar-light bg-white shadow-sm sticky-top">
+		<div class="container-fluid d-flex justify-content-between align-items-center">
+			<div class="d-flex align-items-center gap-2">
+				<button class="btn btn-light" id="toggleSidebar"><i class="bi bi-list fs-4"></i></button>
+			</div>
+
+			<div class="d-flex align-items-center gap-3">
+				<input type="text" class="form-control d-none d-md-block" placeholder="Search...">
+				<i class="bi bi-bell fs-5"></i>
+				<div class="dropdown">
+					<button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">English</button>
+					<ul class="dropdown-menu dropdown-menu-end">
+						<li><a class="dropdown-item" href="#">English</a></li>
+						<li><a class="dropdown-item" href="#">Hindi</a></li>
+					</ul>
+				</div>
+				<div class="dropdown">
+					<button class="btn btn-light d-flex align-items-center dropdown-toggle"
+							data-bs-toggle="dropdown">
+						<img src="https://devomatemarket.com/favicon.png" class="rounded-circle me-2"
+							 style="width:36px;height:36px;">
+						<div class="text-start">
+							<div class="fw-bold">Ayush Gandhi</div>
+							<small class="text-muted">Admin</small>
+						</div>
+					</button>
+					<ul class="dropdown-menu dropdown-menu-end">
+						<li><a class="dropdown-item" href="#">Profile</a></li>
+						<li><a class="dropdown-item" href="#">Settings</a></li>
+						<li>
+							<hr class="dropdown-divider">
+						</li>
+						<li><a class="dropdown-item" href="#">Logout</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container-fluid py-4">
+
+		<!-- Order List Section -->
+		<div class="chart-box mt-4 p-4 rounded-4 shadow-sm" style="background:#fff;">
+			<div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+				<h5 class="fw-semibold m-0 text-dark">📋 Order Lists</h5>
+				<div class="d-flex flex-wrap gap-2">
+					<select class="form-select form-select-sm" style="width:auto;">
+						<option>Filter By</option>
+						<option>Date</option>
+						<option>Status</option>
+					</select>
+					<select class="form-select form-select-sm" style="width:auto;">
+						<option>Date</option>
+						<option>Newest</option>
+						<option>Oldest</option>
+					</select>
+					<select class="form-select form-select-sm" style="width:auto;">
+						<option>Order Type</option>
+						<option>Book</option>
+						<option>Medicine</option>
+						<option>Watch</option>
+					</select>
+					<select class="form-select form-select-sm" style="width:auto;">
+						<option>Order Status</option>
+						<option>Completed</option>
+						<option>Processing</option>
+						<option>Rejected</option>
+					</select>
+					<button class="btn btn-link text-danger fw-semibold text-decoration-none">
+						🔁 Reset Filter
+					</button>
+				</div>
+			</div>
+
+			<div class="table-responsive">
+				<table class="table align-middle mb-0">
+					<thead style="background-color:#f1f4f9;" class="text-secondary small text-uppercase">
+						<tr>
+							<th>ID</th>
+							<th>Name</th>
+							<th>CarId</th>
+							<th>Quantity</th>
+							<th>Date</th>
+							<th>Status</th>
+							<th>Meeting</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody id="order-list-table">
+					
+					</tbody>
+				</table>
+			</div>
+
+			<div class="d-flex justify-content-between align-items-center mt-3 text-secondary small">
+				<span class="paging-info"></span>
+
+				<ul class="pagination pagination-sm mb-0 meeting-pagination">
+					<li class="page-item">
+						<a class="page-link prev" href="#">‹</a>
+					</li>
+
+					<!-- page numbers -->
+
+					<li class="page-item">
+						<a class="page-link next" href="#">›</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+
+		<!--Model contact -->
+		<div id="contact-customer" class="modal"  tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Customer Information</h5>
+
+						<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div id="modal-customer-infor" class="modal-body">
+						<div class="customer-summary p-3 mb-4 bg-light rounded border">
+							<h4 class="text-primary mb-3"><i class="bi bi-person-circle"></i> Customer Information</h4>
+							<div class="row">
+								<div class="col-md-6">
+									<p><strong>Name:</strong> <span id="name" class="text-dark"></span></p>
+									<p><strong>Phone:</strong> <span id="phone-number" class="text-dark"></span></p>
+								</div>
+								<div class="col-md-6">
+									<p><strong>Email:</strong> <span id="email" class="text-dark"></span></p>
+								</div>
+							</div>
+							<div class="mt-2">
+								<strong><i class="bi bi-sticky"></i> Note from Customer:</strong>
+								<p id="message" class="text-muted fst-italic shadow-sm p-2 bg-white rounded"></p>
+							</div>
+						</div>
+
+						<hr />
+
+						<div class="meeting-form mt-4 hidden d-none">
+							<h4 class="mb-3 text-success"><i class="bi bi-calendar-event"></i> Schedule a Meeting</h4>
+
+							@model Meeting
+							<form id="Meeting-add-form"  class="row g-3">
+								<input type="hidden"  name="OrderId" id="hidden-order-id" value="" />
+
+								<div class="col-12">
+									<label class="form-label fw-bold">Title</label>
+									<input asp-for="Title" class="form-control" placeholder="e.g., Car Viewing with Customer" />
+								</div>
+
+								<div class="col-md-12">
+									<label class="form-label fw-bold">Start Time</label>
+									<input asp-for="StartTime" type="datetime-local" class="form-control" />
+								</div>
+								
+							
+
+								<div class="col-12">
+									<label class="form-label fw-bold">Location</label>
+									<input asp-for="Location" class="form-control" placeholder="Showroom or Online Link" />
+								</div>
+
+								<div class="col-md-12">
+									<label class="form-label fw-bold">Description</label>
+									<textarea asp-for="Description" class="form-control" rows="3" placeholder="More details..."></textarea>
+								</div>
+
+							
+								<div class="col-12 text-end mt-4">
+									<button type="submit" class="btn btn-success px-4">
+										<i class="bi bi-save"></i> Save Meeting
+									</button>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary">Save changes</button>
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	
+
+		<style>
+			.table tbody tr:hover {
+				background-color: #f9fbfd;
+				transition: 0.2s ease;
+			}
+
+			.form-select-sm,
+			.btn {
+				font-size: 0.875rem;
+			}
+		</style>
+
+
+		<!-- Footer -->
+		<footer class="footer text-center py-3">
+			<div class="container">
+				<span>Designed by <strong>Devomate</strong></span> |
+				<span>&copy; 2025 All Rights Reserved</span>
+			</div>
+		</footer>
+
+
+	</div>
+
+
+
+</div>
+
+
+
+<script>
+	const ctx = document.getElementById('salesChart');
+
+	// new Chart(ctx, {
+	// 	type: 'line',
+	// 	data: {
+	// 		labels: ['5k', '10k', '15k', '20k', '25k', '30k', '35k', '40k', '45k', '50k', '55k', '60k'],
+	// 		datasets: [{
+	// 			label: 'Sales',
+	// 			data: [20, 40, 35, 65, 45, 55, 35, 70, 50, 60, 55, 58],
+	// 			borderColor: '#0d6efd',
+	// 			backgroundColor: 'rgba(13,110,253,0.1)',
+	// 			tension: 0.4,
+	// 			fill: true,
+	// 			pointBackgroundColor: '#0d6efd',
+	// 			pointRadius: 4
+	// 		}]
+	// 	},
+	// 	options: {
+	// 		responsive: true,
+	// 		maintainAspectRatio: false, important for fixed height
+	// 		scales: {
+	// 			y: {
+	// 				beginAtZero: true,
+	// 				ticks: {
+	// 					stepSize: 20,
+	// 					callback: value => value + '%'
+	// 				},
+	// 				grid: { color: 'rgba(0,0,0,0.05)' }
+	// 			},
+	// 			x: {
+	// 				grid: { display: false }
+	// 			}
+	// 		},
+	// 		plugins: {
+	// 			legend: { display: false },
+	// 			tooltip: {
+	// 				backgroundColor: '#0d6efd',
+	// 				titleColor: '#fff',
+	// 				bodyColor: '#fff',
+	// 				cornerRadius: 6
+	// 			}
+	// 		}
+	// 	}
+	// });
+
+
+	document.addEventListener('DOMContentLoaded', function () {
+		console.log("carlist"); // nên thấy dòng này nếu không có lỗi JS
+		OrderList(1);
+
+
+
+	});
+
+
+
+
+
+
+
+
+	function OrderList(page) {
+
+		fetch('/order/list', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ _pageNumber: page, _pageSize: 6 })
+		})
+			.then(response => response.json())
+			.then(data => {
+
+				const table = document.querySelector('#order-list-table')
+				table.innerHTML = ``;
+				data.orders.forEach(order => {
+					const row = table.insertRow(); 
+					row.innerHTML = `
+					<td>${order.id}</td>
+					<td>${order.customerName}</td>
+					<td>${order.carId}</td>
+					<td>${order.quantity}</td>
+					<td>${order.createdDate}</td>
+					<td><span class="badge bg-info">${order.status}</span></td>
+										<td>${!order?.lastmeeting ? '—'
+							: order.lastmeeting.status === 'Scheduled' ? '📅✔'
+								: order.lastmeeting.status === 'Completed' ? '📦✔'
+									: order.lastmeeting.status === 'Canceled' ? '📅➕'
+								: '—'}
+					</td >
+
+					<td>
+						<button class="model-order-btn btn btn-primary btn-sm" type="button"
+									data-bs-toggle="modal" data-bs-target="#contact-customer"
+								value="${order.id}">Contact</button>
+						
+					</td>	
+					`; 
+
+
+				});
+				const buttons = document.querySelectorAll('.model-order-btn');
+				buttons.forEach(btn => {
+					btn.addEventListener('click', function () {
+						// 'this.value' lấy giá trị từ thuộc tính value="${order.id}"
+						const orderId = this.value;
+						console.log("Đang lấy thông tin cho đơn hàng ID:", orderId);
+
+						// Gọi hàm của bạn
+						getCustomerInfor(orderId);
+					});
+				});
+
+
+
+				createPagination({
+					containerSelector: '.meeting-pagination',
+					infoSelector: '.paging-info',
+					currentPage: data.currentPage,
+					pageSize: 6,
+					totalItems: data.totalItems,
+					onPageChange: p => OrderList(p)
+				});
+
+
+
+			})
+			.catch(error => console.error('Error fetching car data:', error));
+	}
+
+
+
+
+
+	function getCustomerInfor(orderId) {
+
+		fetch('/order/inform', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(orderId)
+		})
+			.then(response => response.json())
+			.then(data => {
+				const model = document.querySelector('#modal-customer-infor')
+
+				model.querySelector('#name').textContent = "name: "+ data.orders.customerName
+				model.querySelector('#phone-number').textContent ="Phone: " +data.orders.phoneNumber
+
+				model.querySelector('#email').textContent = "Email: " + data.orders.email
+
+				model.querySelector('#message').textContent =  data.orders.message
+				model.querySelector('#hidden-order-id').value = orderId
+
+
+
+
+						
+				CreateMeeting()
+
+			})
+			.catch(error => console.error('Error fetching car data:', error));
+	}
+
+
+
+	
+	const connection = new signalR.HubConnectionBuilder()
+	.withUrl('/carHub')
+	.withAutomaticReconnect()
+	.build();
+
+	connection.on("ReceiveOrderNotification", function (order) {
+		console.log("Có order mới:", order);
+		OrderList(1);
+	});
+
+
+	connection.start()
+	.then(() => console.log('SignalR Connected'))
+	.catch(err => console.error('SignalR Connection Error:', err));
+
+
+
+	function CheckMeeting() {
+
+
+		
+	}
+
+
+	function CreateMeeting() {
+
+		document.getElementById("Meeting-add-form").addEventListener("submit", function (event) {
+			event.preventDefault(); // Ngăn chặn hành vi mặc định của form
+
+			const formData = new FormData(this);
+
+			
+			Swal.fire({
+				title: "Are you sure?",
+				showCancelButton: true,
+				confirmButtonText: "Yes",
+			}).then((result) => {
+				if (result.isConfirmed) {
+
+					fetch('/meeting/add', {
+						method: 'post',
+						body: formData
+
+					}).then(response => response.json())
+						.then(a => {
+
+							if (a.success) {
+								Swal.fire({
+									title: "Good job!",
+									text: "Create success",
+									icon: "success"
+								});
+							}
+							else {
+								Swal.fire({
+									icon: "error",
+									title: "Oops...",
+									text: "it already have meeting!"
+								});
+							}
+							
+						})
+						.catch(error => {
+							console.error('Error fetching user details:', error);
+						});
+
+				}
+			});
+
+
+
+
+		});
+
+
+		
+	}
+
+
+</script>

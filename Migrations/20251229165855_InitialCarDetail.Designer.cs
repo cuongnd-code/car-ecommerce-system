@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ManageCars.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250812094254_user-account")]
-    partial class useraccount
+    [Migration("20251229165855_InitialCarDetail")]
+    partial class InitialCarDetail
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,28 +25,12 @@ namespace ManageCars.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("AccountUser", b =>
-                {
-                    b.Property<string>("accountId")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<int>("userId")
-                        .HasColumnType("int");
-
-                    b.HasKey("accountId", "userId");
-
-                    b.HasIndex("userId");
-
-                    b.ToTable("AccountUser");
-                });
-
             modelBuilder.Entity("ManageCars.Models.Account", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("AccountName")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("AccountPassword")
@@ -75,10 +59,14 @@ namespace ManageCars.Migrations
                     b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Color")
-                        .HasColumnType("longtext");
+                    b.Property<DateTime?>("DateTimeAdd")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Description")
+                    b.Property<int?>("Deposit")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Model")
@@ -89,6 +77,9 @@ namespace ManageCars.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<int?>("Price")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Stock")
                         .HasColumnType("int");
 
                     b.Property<int?>("Year")
@@ -121,6 +112,39 @@ namespace ManageCars.Migrations
                     b.ToTable("CarCategorys");
                 });
 
+            modelBuilder.Entity("ManageCars.Models.Order", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<int>("CarId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CarId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Orders");
+                });
+
             modelBuilder.Entity("ManageCars.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -128,6 +152,9 @@ namespace ManageCars.Migrations
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AccountId")
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -141,22 +168,10 @@ namespace ManageCars.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AccountId")
+                        .IsUnique();
+
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("AccountUser", b =>
-                {
-                    b.HasOne("ManageCars.Models.Account", null)
-                        .WithMany()
-                        .HasForeignKey("accountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ManageCars.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("userId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("ManageCars.Models.Car", b =>
@@ -168,9 +183,47 @@ namespace ManageCars.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("ManageCars.Models.Order", b =>
+                {
+                    b.HasOne("ManageCars.Models.Car", "Car")
+                        .WithMany()
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ManageCars.Models.User", "User")
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Car");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ManageCars.Models.User", b =>
+                {
+                    b.HasOne("ManageCars.Models.Account", "Account")
+                        .WithOne("user")
+                        .HasForeignKey("ManageCars.Models.User", "AccountId");
+
+                    b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("ManageCars.Models.Account", b =>
+                {
+                    b.Navigation("user");
+                });
+
             modelBuilder.Entity("ManageCars.Models.CarCategorys", b =>
                 {
                     b.Navigation("Cars");
+                });
+
+            modelBuilder.Entity("ManageCars.Models.User", b =>
+                {
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

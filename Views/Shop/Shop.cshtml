@@ -5,99 +5,193 @@
 }
 
 @model List<Car>
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Shop</title>
-	<script src="~/js/car-pagination.js"></script>
-	<link rel="stylesheet" href="~/css/Shop.css">
 
-"
-		
-	</head>
-	<body>
-	<div id="" class="container-fluid p-0 w-100 border border-4 border-dark ">
-		
-		<div id="car-list-table" class="row d-flex justify-content-between border">
 
+<div id="shop-title" class=" d-flex justify-content-center " style=" position: relative;padding: 150px ;width: 100%;height: 100%; z-index: -1">
+	<h1 class="text-light">Shop</h1>
+</div>
+
+
+
+
+
+
+
+
+
+
+<div id="car-recomanded-table-TEST" class="d-flex justify-content-center container-fluid my-5  g-5" style="overflow: hidden; max-width: 1980px;">
+
+
+	
+
+
+
+
+</div>
+
+
+
+
+<template id="car-item-recomanded-template">
+	<div class="car-recomand-item container my-5 flex-shrink-0" data-index="">
+		<div class="row border rounded shadow-sm p-4 align-items-center">
+
+			<!-- Image -->
+			<div class="col-md-5 bg-light rounded p-3 text-center">
+				<img src=""
+					 class="img-fluid rounded car-img"
+					 alt="car image">
+			</div>
+
+			<!-- Info -->
+			<div class="car-warf-context col-md-7 ps-md-4">
+
+				<div class="d-flex justify-content-between text-secondary small mb-2">
+					<div>
+						<span class="me-4 car-year"></span>
+						<span class="text-uppercase car-category"></span>
+					</div>
+					<span class="fw-semibold car-status">Mới</span>
+				</div>
+
+				<h3 class="fw-bold mb-1 car-name"></h3>
+
+				<p class="text-uppercase text-muted small mb-2 car-type"></p>
+
+				<p class="text-secondary car-description"></p>
+
+				<div class="d-flex justify-content-between align-items-center mt-4">
+					<span class="fs-4 fw-bold text-dark car-price"></span>
+
+					<button class="btn btn-outline-dark rounded-pill px-4 btnBuyCar">
+						Thêm vào giỏ hàng
+					</button>
+				</div>
+
+			</div>
 		</div>
-
-		<div class="pagin"></div>
 	</div>
+</template>
 
 
+
+
+
+<div id="car-recomanded-table" class="d-flex justify-content-center container-fluid my-5 g-5" style="overflow: hidden; max-width: 1980px;">
+</div>
+
+
+<!-- nav tìm theo loại xe -->
+
+<template id="car-category">
+	<li class="nav-item">
+		<button class="btn btn-outline-dark"></button>
+	</li>
+</template>
+
+<div id="tab-car-list-category" class="d-inline-flex justify-content-center " style="width: 60%">
+	<ul class="nav nav-tabs my-2" style="">
+	</ul>
+</div>
+
+
+<!-- tổng hiện chính -->
+
+<template id="car-template">
+	<div class="col-12 col-md-4 col-lg-3 d-flex align-items-stretch">
+		<div class="car-unit border p-3 w-100 d-flex flex-column justify-content-between">
+			<div class="car-infor text-center">
+				<img class="img-fluid mb-3" src="~/images/default.png" alt="car image" style="height: 150px; object-fit: contain;">
+
+				<h5 class="car-name fs-5 fw-bold d-block">Name</h5>
+				<p class="car-type text-muted mb-1">Type</p>
+				<p class="car-price fw-bold text-primary">Price</p>
+			</div>
+			<div class="car-action mt-auto">
+				<button class="btnBuyCar btn btn-outline-dark w-100" value="">Add To Cart</button>
+			</div>
+		</div>
+	</div>
+</template>
+
+<div class="container my-5">
+	<div id="car-list-table" class="row g-4">
+	</div>
+</div>
+<div class="pagin"></div>
+
+
+
+
+<script src="~/js/ShopInterface.js"></script>
+
+
+
+<script>
 	
 
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			console.log("shop"); // nên thấy dòng này nếu không có lỗi JS
 
-			CarShop(1); // Gọi hàm CarShop với trang đầu tiên
-		});
+</script>
 
-		function CarShop(page) { 
-			// Ensure the document is fully loaded before executing scripts
-			// JavaScript to handle the dynamic loading of car data and actions
-			// Fetch car data from the server and populate the table
-			fetch('/shop/car-list', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ _pageNumber: page, _pageSize: 6 })
-			})
-				.then(response => response.json())
-				.then(data => {
 
-					const table = document.querySelector('#car-list-table')
-					table.innerHTML = ''; // Clear existing rows
-					data.cars.forEach(car => {
-						table.innerHTML += `
-														<div class="car-unit col-md-4 ">
-														<div>
+<style>
+	.car-recomand-item {
+		width: 20%;
+		transition: width 0.5s ease;
+		transition: width 0.5s ease, transform 0.5s ease-in-out;
+	}
 
-														<p>${car.id}</p>
-																<p>${car.name}</p>
-
-																<p>${car.type}</p>
-																<p>${car.price}</p>
-														<p>
-														</div>
-														<div>
-															<button class="" value="${car.id}">View</button>
-															<button class="" value="${car.id}">Rent</button>
-															<button class="btnBuyCar" value="${car.id}">Buy</button>
-														</div>
-														</div>
-														</div>
-													`;
-					});
-
-					pagePagin(data.currentPage, data.totalPage);
-					
-
-					document.querySelectorAll(".btnBuyCar").forEach(button => {
-						button.addEventListener("click", function() {
-							buyCar(this.value)
-						})
-						
-					})
-				})
-				.catch(error => console.error('Error fetching car data:', error));
+		.car-recomand-item.active {
+			width: 69%;
+			height: auto;
+			transition: width 0.5s ease, transform 0.5s ease-in-out;
 		}
 
+	.car-warf-context {
+		opacity: 0;
+		max-width: 0;
+		padding: 0 !important;
+		margin: 0 !important;
+		flex: 0;
+		min-width: 0;
+		overflow: hidden;
+		transition: all 0.5s ease;
+		white-space: nowrap;
+	}
 
-		function buyCar(carId){
+	.car-recomand-item.active .car-warf-context {
+		opacity: 1;
+		max-width: 800px;
+		flex: 1;
+		padding: 1.5rem !important;
+		white-space: normal;
+	}
 
-			window.location.href = `/shop/car/${carId}`; // Chuyển hướng đến trang deposit với ID xe
-			
-		}
+	.car-recomand-item .col-md-5 {
+		width: 100%;
+		transition: width 0.5s ease;
+	}
 
 
-	</script>
-	</body>
+	.car-recomand-item.active .col-md-5 {
+		width: 40%;
+	}
+</style>
 
-	
-</html>
+<style>
+
+	#shop-title::before {
+		content: "";
+		position: absolute;
+		display: inline-block;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("https://www.deco-crystal.com/wp-content/uploads/2021/11/thiet-ke-showroom-o-to.jpg") center no-repeat;
+		background-size: cover;
+		z-index: -1
+	}
+
+</style>

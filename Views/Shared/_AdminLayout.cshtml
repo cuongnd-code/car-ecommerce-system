@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - firstWeb</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+     <link rel="stylesheet" href="~/css/AdminUI/dashbroad.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+<body>
+<div>
+
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header d-flex justify-content-between align-items-center p-3">
+                <h4 class="sidebar-title mb-0">Devomate Admin</h4>
+                <button class="btn btn-light d-lg-none" id="closeSidebar"><i class="bi bi-x-lg"></i></button>
+            </div>
+
+            <ul class="sidebar-menu list-unstyled mt-3">
+                <!-- Main -->
+                <li class="active"><a href="/admin/dashboard"><i class="bi bi-speedometer2"></i> <span>Dashboard</span></a></li>
+                <li><a href="/admin/orderlist"><i class="bi bi-bag-check-fill"></i> <span>Orders</span></a></li>
+                <li><a href="pricing.html"><i class="bi bi-cash-stack"></i> <span>Pricing</span></a></li>
+                <li><a href="products.html"><i class="bi bi-box-seam"></i> <span>Products</span></a></li>
+                <li><a href="product_stock.html"><i class="bi bi-stack"></i> <span>Product Stock</span></a></li>
+
+                <!-- Dropdown -->
+                <li>
+                    <a href="#dropSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="bi bi-layout-text-sidebar-reverse"></i> <span>Drop Down</span>
+                    </a>
+                    <ul class="collapse list-unstyled ps-3" id="dropSubmenu">
+                        <li><a href="#">Drop Down 1</a></li>
+                        <li><a href="#">Drop Down 2</a></li>
+                    </ul>
+                </li>
+
+                <hr class="sidebar-divider" />
+
+                <!-- UI Elements -->
+                <li><a href="ui_elements/buttons.html"><i class="bi bi-toggle2-on"></i> <span>Buttons</span></a></li>
+                <li><a href="ui_elements/charts.html"><i class="bi bi-bar-chart-fill"></i> <span>Charts</span></a></li>
+                <li><a href="ui_elements/tables.html"><i class="bi bi-table"></i> <span>Tables</span></a></li>
+                <li><a href="ui_elements/icons.html"><i class="bi bi-stars"></i> <span>Icons</span></a></li>
+
+                <hr class="sidebar-divider" />
+
+                <!-- Pages -->
+                <li><a href="pages/login.html"><i class="bi bi-box-arrow-in-right"></i> <span>Login</span></a></li>
+                <li><a href="pages/register.html"><i class="bi bi-person-plus-fill"></i> <span>Register</span></a></li>
+                <li><a href="pages/404.html"><i class="bi bi-exclamation-triangle-fill"></i> <span>404 Page</span></a></li>
+            </ul>
+        </aside>
+</div>
+
+    <div>
+        @RenderBody()
+    </div>
+</body>
+
+<script src="~/js/AdminUI/adminUi.js"></script>
+<script src="~/js/car-pagination.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+</html>

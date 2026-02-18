@@ -10,7 +10,6 @@
 		public string? email { get; set; }
 
 
-        public User? user { get; set; } 
 
 
     }

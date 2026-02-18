@@ -12,7 +12,7 @@ namespace ManageCars.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20250618163644_intel")]
-    partial class intel
+    partial class Intel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

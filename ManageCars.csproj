@@ -10,7 +10,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\images\anhnen.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="bootstrap" Version="5.3.5" />
+    <PackageReference Include="editorconfig" Version="0.15.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.9" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="10.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -26,9 +33,14 @@
 
   <ItemGroup>
     <Folder Include="Data\Enum\" />
-    <Folder Include="Migrations\" />
-    <Folder Include="Models\NewFolder\" />
+    <Folder Include="Mappers\" />
+    <Folder Include="Views\NewFolder1\" />
+    <Folder Include="Views\NewFolder\" />
     <Folder Include="wwwroot\videos\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\anhnen.jpg" />
   </ItemGroup>
 
 </Project>

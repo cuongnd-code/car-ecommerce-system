@@ -1,0 +1,260 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model ManageCars.Models.Car
+
+<div class="container my-5">
+
+
+    <div class="row g-4">
+
+        <!-- car infor -->
+        <div id="car-information-all" class="col-lg-8">
+            <div class="car-main-card">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h1 class="car-title">@Model.Name</h1>
+                        <p class="text-muted fw-bold">SUV • Midnight Edition • New</p>
+                        <div class="d-flex gap-2 mt-2">
+                            <span class="badge-custom">⭐ 4.9 Rating</span>
+                            <span class="badge-custom"><i class="bi bi-calendar"></i> @Model.Year</span>
+                            <span class="badge-custom"><i class="bi bi-tag"></i> @((Model.Category?.Name) ?? "Not updated")</span>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <div class="price-tag">@Model.Price VNĐ</div>
+                        <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2 fw-bold">In stock (@Model.Stock car)</span>
+                    </div>
+                </div>
+
+                <div class="hero-image-container">
+                    <img src="~/images/default.jpg" class="hero-image" alt="Car Image">
+                </div>
+
+                <div class="row g-4 mt-3 border-top pt-4">
+                    <div class="col-md-4">
+                        <small class="text-muted">Engine</small>
+                        <p class="fw-bold mb-3">@(Model.CarDetail?.Engine ?? "ON update")</p>
+
+                        <small class="text-muted">Transmission</small>
+                        <p class="fw-bold">@(Model.CarDetail?.Transmission ?? "ON update")</p>
+                    </div>
+                    <div class="col-md-4">
+                        <small class="text-muted">Fuel Consumption</small>
+                        <p class="fw-bold mb-3">@(Model.CarDetail?.FuelConsumption ?? "ON update")</p>
+
+                        <small class="text-muted">Drive Type</small>
+                        <p class="fw-bold">@(Model.CarDetail?.DriveType ?? "ON update")</p>
+                    </div>
+                    <div class="col-md-4">
+                        <small class="text-muted">Seats / Doors</small>
+                        <p class="fw-bold mb-3">
+                            @(Model.CarDetail?.Seats != null ? Model.CarDetail.Seats + " Seats" : "ON update") /
+                            @(Model.CarDetail?.DoorCount != null ? Model.CarDetail.DoorCount + " Doors" : "N/A")
+                        </p>
+
+                        <small class="text-muted">Fuel Type</small>
+                        <p class="fw-bold">@(Model.CarDetail?.FuelType ?? "ON update")</p>
+                    </div>
+                </div>
+
+                <div class="row g-4 mt-1 border-top pt-4">
+                    <div class="col-md-6">
+                        <small class="text-muted">Exterior Color</small>
+                        <p class="fw-bold">@(Model.CarDetail?.ColorExterior ?? "ON update")</p>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-muted">Interior Color</small>
+                        <p class="fw-bold">@(Model.CarDetail?.ColorInterior ?? "ON update")</p>
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <h5 class="fw-bold mb-3">Detailed Description</h5>
+                    <p class="text-muted" style="line-height: 1.8;">
+                        @if (!string.IsNullOrEmpty(Model.CarDetail?.Description))
+                        {
+                            @Model.CarDetail.Description
+                        }
+                        else
+                        {
+                            <span>Detailed description for the @Model.Name is currently being updated. Please contact us for more information.</span>
+                        }
+                    </p>
+                </div>
+
+
+
+            </div>
+        </div>
+
+
+
+
+        <!-- đặt đơn  -->
+       
+        <div class="col-lg-4">
+            <div class="contact-panel shadow-sm position-sticky" style="top: 20px;">
+                <h5 class="fw-bold mb-3">Get a Quote Now</h5>
+                <p class="small text-muted mb-4">Leave your details below, and our consultant will call you back within 15 minutes.</p>
+
+                <form id="customer-order-form" >
+                    <input type="hidden" name="CarId" value="@Model.Id" />
+
+                    <div class="form-field">
+                        <label>Full Name (Required)</label>
+                        <input type="text" name="name" placeholder="e.g. John Doe" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Phone Number (Required)</label>
+                        <input type="tel" name="phone" placeholder="09xx xxx xxx" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Email (Optional)</label>
+                        <input type="tel" name="email" placeholder="xxx@gmail.com" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Message (Optional)</label>
+                        <input type="text" name="Message" placeholder="I would like to book a test drive...">
+                    </div>
+
+                    <div class="price-box mt-4 p-3 rounded-4" style="background: #FFFBEB; border: 1px dashed #FDE68A;">
+                        <div class="d-flex justify-content-between mb-2 small">
+                            <span>MSRP (List Price):</span>
+                            <span class="fw-bold">@Model.Price?.ToString("N0") VNĐ</span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-2 small text-success">
+                            <span>Special Offer:</span>
+                            <span class="fw-bold">-500,000 VNĐ</span>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">Estimated Total:</span>
+                            <span class="h4 fw-bold mb-0 text-dark">
+                                @((Model.Price - 500000)?.ToString("N0") ?? "Contact for price") VNĐ
+                            </span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-yellow mt-4">SEND INQUIRY</button>
+                </form>
+
+                <p class="text-center mt-3 text-muted" style="font-size: 0.7rem;">
+                    <i class="bi bi-shield-check"></i> Your information is kept strictly confidential.
+                </p>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+
+
+<style>
+    :root {
+        --primary-yellow: #FFDD00;
+        --bg-light: #F8F9FA;
+        --text-dark: #1A1D1F;
+        --border-color: #EDF0F2;
+    }
+
+    body {
+        background-color: var(--bg-light);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .car-main-card {
+        background: white;
+        border-radius: 24px;
+        padding: 30px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    .car-title {
+        font-weight: 800;
+        font-size: 2.5rem;
+        color: var(--text-dark);
+    }
+
+    .price-tag {
+        font-size: 2.2rem;
+        font-weight: 800;
+    }
+
+    .badge-custom {
+        background: #F4F4F4;
+        padding: 6px 14px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #6F767E;
+    }
+
+    .hero-image-container {
+        text-align: center;
+        padding: 40px 0;
+    }
+
+    .hero-image {
+        max-width: 85%;
+        filter: drop-shadow(0 15px 25px rgba(0,0,0,0.1));
+    }
+
+    .contact-panel {
+        background: white;
+        border-radius: 24px;
+        padding: 25px;
+        border: 1px solid var(--border-color);
+    }
+
+    .form-field {
+        background: #F8F9FA;
+        border-radius: 12px;
+        padding: 10px 15px;
+        margin-bottom: 12px;
+    }
+
+        .form-field label {
+            font-size: 0.65rem;
+            color: #9A9FA5;
+            text-transform: uppercase;
+            font-weight: 700;
+            display: block;
+        }
+
+        .form-field input {
+            border: none;
+            background: transparent;
+            width: 100%;
+            font-weight: 600;
+            outline: none;
+        }
+
+    .btn-yellow {
+        background: var(--primary-yellow);
+        border: none;
+        width: 100%;
+        padding: 16px;
+        border-radius: 14px;
+        font-weight: 800;
+        transition: 0.2s;
+    }
+
+        .btn-yellow:hover {
+            background: #e6c700;
+        }
+</style>
+
+
+
+<script src="~/js/Car/CarDetail.js"></script>

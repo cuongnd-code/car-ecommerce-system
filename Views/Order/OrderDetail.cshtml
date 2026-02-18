@@ -3,109 +3,105 @@
 *@
 @{
 }
+<div class="container detail-container">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="car-main-card">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h1 class="car-title">Chevrolet Trax 2025</h1>
+                        <p class="text-muted fw-bold">SUV • Active Trim • Midnight Edition</p>
+                        <div class="d-flex gap-2 mt-3">
+                            <span class="badge-info">⭐ 4.8 Rating</span>
+                            <span class="badge-info"><i class="bi bi-geo-alt"></i> New York, US</span>
+                            <span class="badge-info"><i class="bi bi-clock"></i> Just Added</span>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <div class="price-tag">$24,900</div>
+                        <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fw-bold">In Stock (@Model.Stock)</span>
+                    </div>
+                </div>
 
-@model string
+                <div class="hero-image-container">
+                    <img src="https://purepng.com/public/uploads/large/purepng.com-chevrolet-trax-carcarvehicletransportchevrolet-961524662450ly00y.png" class="hero-image" alt="Car">
+                </div>
 
-<div>
-	<p>aaa + @Model</p>
+                <div class="row g-4 mt-4 border-top pt-5">
+                    <div class="col-md-4">
+                        <p class="small text-muted mb-1">Engine</p>
+                        <h6 class="fw-bold">1.2L Turbo I3</h6>
+                        <p class="small text-muted mb-1 mt-3">Transmission</p>
+                        <h6 class="fw-bold">6-Speed Automatic</h6>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="small text-muted mb-1">Fuel Consumption</p>
+                        <h6 class="fw-bold">30 MPG Combined</h6>
+                        <p class="small text-muted mb-1 mt-3">Drive Type</p>
+                        <h6 class="fw-bold">Front-Wheel Drive</h6>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="small text-muted mb-1">Interior Color</p>
+                        <h6 class="fw-bold">Jet Black / Artemis</h6>
+                        <p class="small text-muted mb-1 mt-3">Exterior Color</p>
+                        <h6 class="fw-bold">Cacti Green</h6>
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <h5 class="fw-bold mb-3">Description</h5>
+                    <p class="text-muted" style="line-height: 1.8;">
+                        The 2025 Chevrolet Trax is a bold, modern compact SUV designed for urban adventures.
+                        Featuring a spacious interior with 5-passenger seating, advanced safety technology,
+                        and a fuel-efficient turbocharged engine. This Midnight Edition includes blacked-out
+                        accents and premium 18-inch wheels.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="contact-panel shadow-sm">
+                <h5 class="fw-bold mb-4">Request a Quote</h5>
+                <p class="small text-muted mb-4">Leave your details and our dealer will contact you within 24 hours.</p>
+
+                <div class="form-group-custom">
+                    <label>Full Name</label>
+                    <input type="text" placeholder="e.g. John Doe">
+                </div>
+
+                <div class="form-group-custom">
+                    <label>Phone Number</label>
+                    <input type="tel" placeholder="090-xxx-xxxx">
+                </div>
+
+                <div class="form-group-custom">
+                    <label>Message (Optional)</label>
+                    <input type="text" placeholder="I'm interested in...">
+                </div>
+
+                <div class="price-summary mt-4 p-3 rounded-4" style="background: #FFFBEB;">
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span>List Price</span>
+                        <span class="fw-bold">$24,900</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2 small text-success">
+                        <span>Dealer Discount</span>
+                        <span class="fw-bold">-$1,000</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold">Estimated Total</span>
+                        <span class="h4 fw-bold mb-0 text-primary">$23,900</span>
+                    </div>
+                </div>
+
+                <button class="btn-inquiry mt-4">CONTACT DEALER</button>
+
+                <p class="text-center mt-3 x-small text-muted" style="font-size: 0.75rem;">
+                    <i class="bi bi-shield-check"></i> No account or registration required.
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-	<div class="orderDetail"> </div>
-	<div class="user"></div>
-
-	<div class="car"></div>
-
-</div>
-
-	<form method="post" class="emailSend">
-	
-	<input class="emailInput" type="text" name="To" value="" readonly/>
-	<input type="text" name="Subject" value="" />
-	<input type="text" name="Body" value="" />
-
-	<button type="submit" class="btn btn-primary">Send email</button>
-	</form>
-
-<script>
-
-	document.addEventListener('DOMContentLoaded', function () {
-		console.log("order detail"); // nên thấy dòng này nếu không có lỗi JS
-		getOrderIdFromUrl()
-
-	});
-
-
-	function getOrderIdFromUrl() {
-		
-	fetch('/order/OrderInformation', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify("@Model")
-	})
-		.then(response => response.json())
-		.then(a => {
-
-				document.querySelector('.orderDetail').innerHTML += `
-												<p>Order ID: ${a.order.id}</p>
-												<p>Order Date: ${new Date(a.order.orderDate).toLocaleDateString()}</p>
-												<p>Order Status: ${a.order.status}</p>
-												<hr />
-											`;
-
-				document.querySelector('.user').innerHTML += `
-											<p>User Name: ${a.user.userName}</p>
-											<p>User Email: ${a.user.emaill}</p>
-											<p>User Phone: ${a.user.phone}</p>
-											<p>User Address: ${a.user.address}</p>
-											<hr />
-										`;
-
-				document.querySelector('.car').innerHTML += `
-											<p>Car Name: ${a.car.name}</p>
-											<p>Car Type: ${a.car.model}</p>
-											<p>Car Year: ${a.car.year}</p>
-											<p>Car Price: ${a.car.price}</p>
-											<p>Car Description: ${a.car.description}</p>
-											<p>Car Category: ${a.car.categoryName}</p>
-											<hr />
-										`;
-
-				document.querySelector('.emailInput').value = a.user.emaill
-
-			})
-		.catch(error => {
-			console.error('Error fetching user details:', error);
-		});
-	}
-
-	 
-	document.querySelector('.emailSend').addEventListener('submit', function(event) {
-		event.preventDefault(); // Ngăn chặn hành vi mặc định của form
-		const formData = new FormData(this);
-		SendEmail(formData);
-	});
-
-	function SendEmail(formData) {
-
-		fetch('/manager/sendemail', {
-			method: 'POST',
-			body: formData
-		})
-			.then(response => response.json())
-			.then(data => {
-				if (data.success) {
-					alert(data.message);
-				} else {
-					alert(data.message);
-				}
-			})
-			.catch(error => {
-				console.error('Error sending email:', error);
-				alert('An error occurred while sending the email.');
-			});
-
-	}
-
-</script>

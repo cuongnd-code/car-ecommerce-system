@@ -5,7 +5,7 @@
 namespace ManageCars.Migrations
 {
     /// <inheritdoc />
-    public partial class useraccount : Migration
+    public partial class Useraccount : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

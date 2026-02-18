@@ -35,7 +35,7 @@ namespace ManageCars.Controllers
 
 		[HttpGet("add-car")]
 		public IActionResult AddCar()
-		{ 
+		{
 			return View();
 		}
 		[HttpPost("add-car")]
@@ -52,10 +52,10 @@ namespace ManageCars.Controllers
 			string filename;
 
 
-			if(carViewModel.Image != null && carViewModel.Image.Length >0)
+			if (carViewModel.Image != null && carViewModel.Image.Length > 0)
 			{
-				
-				 filename = Path.GetFileName(carViewModel.Image.FileName);
+
+				filename = Path.GetFileName(carViewModel.Image.FileName);
 				_logger.LogInformation("Filename: " + filename);
 				var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", filename);
 				//filemode.create neu chua co file thi tao moi file, neu co thi se ghi de len file cu
@@ -75,11 +75,9 @@ namespace ManageCars.Controllers
 			{
 				Name = carViewModel.Name,
 				Model = carViewModel.Model,
-				Color = carViewModel.Color,
 				Year = carViewModel.Year,
 				Price = carViewModel.Price,
-				Image= filename,
-				Description = carViewModel.Description,
+				Image = filename,
 				CategoryId = carViewModel.CategoryId
 			});
 			_logger.LogInformation("ADD CAR: {CarName} ", carViewModel.Name);
@@ -97,36 +95,7 @@ namespace ManageCars.Controllers
 
 			return View();
 		}
-		//[HttpPost("car-list")]
-		//public JsonResult GetCars([FromBody] PagingRequest pagingRequest)
-		//{
-		//	_logger.LogInformation("CAR LIST: " + pagingRequest._pageNumber);
-		//	_logger.LogInformation("CAR LISTSIze: " + pagingRequest._pageSize);
 
-		//	var cars = _context.Cars
-		//		.Include(c => c.Category) // Include the related Category entity
-		//		.Select(c => new
-		//		{
-		//			Id = c.Id,
-		//			Name = c.Name,
-		//			Type = c.Category.Name,
-		//			Price = c.Price,
-		//		})
-		//		.OrderBy(p => p.Id)
-		//		.Skip((pagingRequest._pageNumber - 1) * pagingRequest._pageSize)
-		//		.Take(pagingRequest._pageSize)
-		//		.ToList();
-		//	int totalItems = _context.Cars.Count();
-		//	int totalPages = (int)Math.Ceiling((double)totalItems / pagingRequest._pageSize);
-
-
-		//	return Json(new
-		//	{
-		//		Cars = cars,
-		//		CurrentPage = pagingRequest._pageNumber,
-		//		TotalPage = totalPages,
-		//	});
-		//}
 		[HttpPost("car-edit1")]
 		public JsonResult EditCar([FromBody] int carId)
 		{
@@ -167,15 +136,13 @@ namespace ManageCars.Controllers
 				Id = carViewModel.Id,
 				Name = carViewModel.Name,
 				Model = carViewModel.Model,
-				Color = carViewModel.Color,
 				Year = carViewModel.Year,
 				Price = carViewModel.Price,
 				Image = filename,
-				Description = carViewModel.Description,
 				CategoryId = carViewModel.CategoryId
 			});
 			_context.SaveChanges();
-		string message = "Car added successfully.";
+			string message = "Car added successfully.";
 			return Json(message);
 		}
 
@@ -196,5 +163,28 @@ namespace ManageCars.Controllers
 			_logger.LogInformation("DELETE CAR: {CarId} ", carId);
 			return Ok(new { Message = "Car delete successfully" });
 		}
+
+        [HttpGet]
+        [Route("Detail/{carId}")]
+        public IActionResult GetCarDetail(int carId)
+        {
+			var car = _context.Cars
+				.Include(c => c.CarDetail)
+				.Include(c => c.Category)
+                .FirstOrDefault(c => c.Id == carId);
+
+            if (car == null)
+            {
+                return NotFound("Car not found.");
+            }
+
+			
+
+
+            return View("CarDetail",car);
+
+        }
+
 	}
+
 }

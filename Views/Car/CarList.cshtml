@@ -7,16 +7,16 @@
 }
 
 @model ManageCars.Models.ViewModel.CarViewModel
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Car List</title>
-	<script src="~/js/car-pagination.js"></script>
-</head>
-<body>
-	<div class="container m-1 text-primary">
+<script src="~/js/car-pagination.js"></script>
+
+<div class="Allcontainer">
+
+
+	<div class="category-search ">
+
+	</div>
+
+	<div class="content-car container m-1 text-primary">
 		<h2>Car List</h2>
 		<p>Here is the list of cars available in the system.</p>
 
@@ -30,7 +30,6 @@
 					<th>Type</th>
 					<th>Price</th>
 					<th>Deposit</th>
-
 					<th>Actions</th>
 				</tr>
 			</thead>
@@ -49,27 +48,28 @@
 		</nav>
 	</div>
 
-
-	<div class="modal" id="car-edit-modal">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button class="btn-close" data-bs-dismiss="modal"></button>
-				</div>
-
-				<div class="modal-body car-edit-body">
+</div>
 
 
-
-				</div>
-				<p>@ViewBag.SuccessMessage</p>
-
-
+<div class="modal" id="car-edit-modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button class="btn-close" data-bs-dismiss="modal"></button>
 			</div>
+
+			<div class="modal-body car-edit-body">
+			</div>
+			<p>@ViewBag.SuccessMessage</p>
+
 
 		</div>
 
 	</div>
+
+</div>
+
+
 	<script>
 
 
@@ -250,6 +250,3 @@
 
 	</script>
 
-
-</body>
-</html>

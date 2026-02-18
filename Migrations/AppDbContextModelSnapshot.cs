@@ -56,11 +56,8 @@ namespace ManageCars.Migrations
                     b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Color")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("longtext");
+                    b.Property<DateTime?>("DateTimeAdd")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Image")
                         .IsRequired()
@@ -73,13 +70,13 @@ namespace ManageCars.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("Price")
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Stock")
                         .HasColumnType("int");
 
                     b.Property<int?>("Year")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("deposit")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -109,40 +106,7 @@ namespace ManageCars.Migrations
                     b.ToTable("CarCategorys");
                 });
 
-            modelBuilder.Entity("ManageCars.Models.Order", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<int>("CarId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CarId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("ManageCars.Models.User", b =>
+            modelBuilder.Entity("ManageCars.Models.CarDetail", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -150,25 +114,151 @@ namespace ManageCars.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AccountId")
-                        .HasColumnType("varchar(255)");
+                    b.Property<int>("CarId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("UserName")
-                        .IsRequired()
+                    b.Property<string>("ColorExterior")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("address")
+                    b.Property<string>("ColorInterior")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("phone")
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000)
+                        .HasColumnType("varchar(2000)");
+
+                    b.Property<int?>("DoorCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DriveType")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Engine")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FuelConsumption")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FuelType")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("Seats")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Transmission")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountId")
+                    b.HasIndex("CarId")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("CarDetails");
+                });
+
+            modelBuilder.Entity("ManageCars.Models.Meeting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Meeting");
+                });
+
+            modelBuilder.Entity("ManageCars.Models.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CarId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CustomerName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CarId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("ManageCars.Models.VisitorLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("LastActiveTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("SessionId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("VisitTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("VisitorId")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VisitorLogs");
                 });
 
             modelBuilder.Entity("ManageCars.Models.Car", b =>
@@ -180,37 +270,44 @@ namespace ManageCars.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("ManageCars.Models.Order", b =>
+            modelBuilder.Entity("ManageCars.Models.CarDetail", b =>
                 {
                     b.HasOne("ManageCars.Models.Car", "Car")
-                        .WithMany()
-                        .HasForeignKey("CarId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ManageCars.Models.User", "User")
-                        .WithMany("Orders")
-                        .HasForeignKey("UserId")
+                        .WithOne("CarDetail")
+                        .HasForeignKey("ManageCars.Models.CarDetail", "CarId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Car");
-
-                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ManageCars.Models.User", b =>
+            modelBuilder.Entity("ManageCars.Models.Meeting", b =>
                 {
-                    b.HasOne("ManageCars.Models.Account", "Account")
-                        .WithOne("user")
-                        .HasForeignKey("ManageCars.Models.User", "AccountId");
+                    b.HasOne("ManageCars.Models.Order", "Order")
+                        .WithMany("Meeting")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Account");
+                    b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("ManageCars.Models.Account", b =>
+            modelBuilder.Entity("ManageCars.Models.Order", b =>
                 {
-                    b.Navigation("user");
+                    b.HasOne("ManageCars.Models.Car", "Car")
+                        .WithMany("Orders")
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Car");
+                });
+
+            modelBuilder.Entity("ManageCars.Models.Car", b =>
+                {
+                    b.Navigation("CarDetail");
+
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("ManageCars.Models.CarCategorys", b =>
@@ -218,9 +315,9 @@ namespace ManageCars.Migrations
                     b.Navigation("Cars");
                 });
 
-            modelBuilder.Entity("ManageCars.Models.User", b =>
+            modelBuilder.Entity("ManageCars.Models.Order", b =>
                 {
-                    b.Navigation("Orders");
+                    b.Navigation("Meeting");
                 });
 #pragma warning restore 612, 618
         }
