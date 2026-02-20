@@ -1,29 +1,139 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Car Store - Login</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-card {
+            background: white;
+            width: 380px;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            text-align: center;
+        }
+
+            .login-card h2 {
+                margin-bottom: 25px;
+                color: #2c5364;
+            }
+
+            .login-card input {
+                width: 100%;
+                padding: 12px;
+                margin: 10px 0;
+                border-radius: 8px;
+                border: 1px solid #ccc;
+                font-size: 14px;
+            }
+
+                .login-card input:focus {
+                    outline: none;
+                    border-color: #2c5364;
+                    box-shadow: 0 0 5px #2c5364;
+                }
+
+        .login-btn {
+            background: #2c5364;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            .login-btn:hover {
+                background: #203a43;
+            }
+
+        .brand {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #0f2027;
+        }
+
+        .message-success {
+            color: green;
+            margin-top: 10px;
+        }
+
+        .message-error {
+            color: red;
+            margin-top: 10px;
+        }
+
+        .register-link {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+            .register-link a {
+                text-decoration: none;
+                color: #2c5364;
+                font-weight: bold;
+            }
+
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="brand">🚗 Luxury Car Store</div>
+        <h2>Login</h2>
+
+        <form asp-controller="Home" asp-action="Register" method="post">
+            <label for="Username">Account name</label>
+
+            <input type="text" name="Username" placeholder="Enter username" />
+
+            <input type="text" name="Email" placeholder="Enter email" />
 
 
+            <input type="text" name="PasswordHash" placeholder="Enter Password" />
 
-<div class="container m-1 text-primary">
-    <p>Register</p>
+            <input type="text" name="ReAccountPassword" placeholder="Enter RePassword" />
 
-    @model ManageCars.Models.ViewModel.RegisterViewModel
-    <form asp-controller="home" asp-action="register" method="post">
-        <label asp-for="AccountName">AccountName</label>
-        <input asp-for="AccountName" />
+            <input type="submit" value="RegisterV" />
+            @if (TempData["Success"] != null)
+            {
+                <div style="color: green;">
+                    @TempData["Success"]
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div style="color: red;">
+                    @TempData["Error"]
+                </div>
+            }
+        </form>
 
-        <label asp-for="AccountPassword">Password</label>
-        <input asp-for="AccountPassword" type="password" />
+        <div class="register-link">
+            Don't have an account?
+            <a asp-controller="Home" asp-action="Register">Register</a>
+        </div>
 
-        <label asp-for="ReAccountPassword">Re-Password</label>
-        <input asp-for="ReAccountPassword" type="password" />
+    </div>
 
-        <input type="submit" value="Login" />
-    </form>
-
-    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
-    {
-        <div>@ViewBag.ErrorMessage</div>
-    }
-    
-</div>
+</body>
+</html>

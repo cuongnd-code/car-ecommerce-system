@@ -35,7 +35,6 @@
     <Folder Include="Data\Enum\" />
     <Folder Include="Mappers\" />
     <Folder Include="Views\NewFolder1\" />
-    <Folder Include="Views\NewFolder\" />
     <Folder Include="wwwroot\videos\" />
   </ItemGroup>
 

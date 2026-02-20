@@ -1,13 +1,10 @@
-﻿using System.Security.Claims;
-using ManageCars.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace ManageCars.Controllers
 {
 	public class UserController : Controller
 	{
 
-       
-    }
+
+	}
 }
