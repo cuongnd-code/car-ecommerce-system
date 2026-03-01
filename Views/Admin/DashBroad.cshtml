@@ -8,55 +8,6 @@
 }
 
 
-<!-- License ID: DEVOMATE-SRC-20260102-UBQJUYVIAJ | unknown@example.com | 2026-01-02 14:06:00 -->
-
-
-
-
-<!-- Overlay -->
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-<!-- Main Content -->
-<div class="main-content" id="main-content">
-    <nav class="navbar navbar-light bg-white shadow-sm sticky-top">
-        <div class="container-fluid d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center gap-2">
-                <button class="btn btn-light" id="toggleSidebar"><i class="bi bi-list fs-4"></i></button>
-            </div>
-
-            <div class="d-flex align-items-center gap-3">
-                <input type="text" class="form-control d-none d-md-block" placeholder="Search...">
-                <i class="bi bi-bell fs-5"></i>
-                <div class="dropdown">
-                    <button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">English</button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#">English</a></li>
-                        <li><a class="dropdown-item" href="#">Hindi</a></li>
-                    </ul>
-                </div>
-                <div class="dropdown">
-                    <button class="btn btn-light d-flex align-items-center dropdown-toggle"
-                            data-bs-toggle="dropdown">
-                        <img src="https://devomatemarket.com/favicon.png" class="rounded-circle me-2"
-                             style="width:36px;height:36px;">
-                        <div class="text-start">
-                            <div class="fw-bold">Ayush Gandhi</div>
-                            <small class="text-muted">Admin</small>
-                        </div>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
-                        <li><a class="dropdown-item" href="#">Settings</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="#">Logout</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </nav>
-
     <div class="container-fluid py-4">
 
         <h3><b>Dashboard</b></h3>
@@ -69,7 +20,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h5>Total User</h5>
-                            <h3>40,689</h3>
+                            <h3 id="totalUser"></h3>
                             <span class="stat-up">⬆ 8.5% Up from yesterday</span>
                         </div>
                         <div class="rounded-circle d-flex align-items-center justify-content-center"
@@ -86,7 +37,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h5>Total Order</h5>
-                            <h3>10,293</h3>
+                            <h3 id="totalOrder">0</h3>
                             <span class="stat-normal">⬆ 1.3% Up from past week</span>
                         </div>
                         <div class="rounded-circle d-flex align-items-center justify-content-center"
@@ -103,7 +54,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h5>Total Sales</h5>
-                            <h3>₹89,000</h3>
+                            <h3 id="totalSales">0</h3>
                             <span class="stat-down">⬇ 4.3% Down from yesterday</span>
                         </div>
                         <div class="rounded-circle d-flex align-items-center justify-content-center"
@@ -120,7 +71,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h5>Total Pending</h5>
-                            <h3>2,040</h3>
+                            <h3 id="totalPending">0</h3>        
                             <span class="stat-up">⬆ 1.8% Up from yesterday</span>
                         </div>
                         <div class="rounded-circle d-flex align-items-center justify-content-center"
@@ -274,57 +225,91 @@
 
 
 
-</div>
 
 
 <script>
 
 
-         const ctx = document.getElementById('salesChart');
 
 
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['5k', '10k', '15k', '20k', '25k', '30k', '35k', '40k', '45k', '50k', '55k', '60k'],
-            datasets: [{
-                label: 'Sales',
-                data: [20, 40, 35, 65, 45, 55, 35, 70, 50, 60, 55, 58],
-                borderColor: '#0d6efd',
-                backgroundColor: 'rgba(13,110,253,0.1)',
-                tension: 0.4,
-                fill: true,
-                pointBackgroundColor: '#0d6efd',
-                pointRadius: 4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false, // important for fixed height
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 20,
-                        callback: value => value + '%'
-                    },
-                    grid: { color: 'rgba(0,0,0,0.05)' }
-                },
-                x: {
-                    grid: { display: false }
-                }
+    document.addEventListener('DOMContentLoaded', function () {
+        updateStats()
+        fetchChartData()
+    });
+
+
+    function fetchChartData() {
+        fetch('/admin/monthly-sales')
+            .then(res => res.json())
+            .then(data => {
+
+                const labels = data.map(x => 'T' + x.month);
+                const values = data.map(x => x.total);
+
+                renderChart(labels, values);
+
+            });
+		
+        }
+    function renderChart(labels, values) {
+
+        const ctx = document.getElementById('salesChart');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Monthly Sales',
+                    data: values,
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13,110,253,0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#0d6efd',
+                    pointRadius: 4
+                }]
             },
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    backgroundColor: '#0d6efd',
-                    titleColor: '#fff',
-                    bodyColor: '#fff',
-                    cornerRadius: 6
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: value => value.toLocaleString() + ' ₹'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
                 }
             }
-        }
-    });
+        });
+    }
+
+    function updateStats() {
+
+
+        fetch('/admin/stats', {
+            method: 'Get',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+			.then(response => response.json())
+			.then(data => {
+                document.getElementById('totalUser').textContent = data.countUser.toLocaleString();
+                document.getElementById('totalOrder').textContent = data.countOrder.toLocaleString();
+                document.getElementById('totalSales').textContent = '₹' + data.countSales.toLocaleString();
+                document.getElementById('totalPending').textContent = data.countPending.toLocaleString();
+			})
+			.catch(error => console.error('Error fetching stats:', error));
+
+		
+	}
+
+
 </script>
 
 

@@ -174,8 +174,29 @@ namespace ManageCars.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AssignedTo")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CancelReason")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("CancelledAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CancelledBy")
+                        .HasColumnType("longtext");
+
                     b.Property<int>("CarId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CompletedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CompletionNote")
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime(6)");
@@ -183,10 +204,22 @@ namespace ManageCars.Migrations
                     b.Property<string>("CustomerName")
                         .HasColumnType("longtext");
 
+                    b.Property<decimal?>("DepositAmount")
+                        .HasColumnType("decimal(65,30)");
+
                     b.Property<string>("Email")
                         .HasColumnType("longtext");
 
+                    b.Property<decimal?>("FinalPrice")
+                        .HasColumnType("decimal(65,30)");
+
                     b.Property<string>("Message")
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal?>("PaidAmount")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<string>("PaymentMethod")
                         .HasColumnType("longtext");
 
                     b.Property<string>("PhoneNumber")
@@ -195,6 +228,9 @@ namespace ManageCars.Migrations
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<decimal?>("UnitPrice")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<int>("quantity")
                         .HasColumnType("int");

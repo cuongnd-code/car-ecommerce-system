@@ -1,5 +1,4 @@
 ﻿using ManageCars.Controllers;
-using ManageCars.Models;
 
 namespace ManageCars.Middleware
 {
@@ -17,37 +16,37 @@ namespace ManageCars.Middleware
             _logger = logger;
         }
 
-        public async Task InvokeAsync(HttpContext context, AppDbContext db)
-        {
-            var visitorId = Helper.VisitorHelper.GetOrCreateVisitorId(context);
-            var sessionId = context.Session.Id;
+        //public async Task InvokeAsync(HttpContext context, AppDbContext db)
+        //{
+        //    var visitorId = Helper.VisitorHelper.GetOrCreateVisitorId(context);
+        //    var sessionId = context.Session.Id;
 
-            var log = db.VisitorLogs.FirstOrDefault(v => v.VisitorId == visitorId);
+        //    var log = db.VisitorLogs.FirstOrDefault(v => v.VisitorId == visitorId);
 
-            if (log == null)
-            {
-                db.VisitorLogs.Add(new VisitorLog
-                {
-                    VisitorId = visitorId,
-                    SessionId = sessionId,
-                    VisitTime = DateTime.Now,
-                    LastActiveTime = DateTime.Now,
-                    // test sau sẽ dung IP thực tế
-                    IpAddress = context.Connection.RemoteIpAddress?.ToString(),
-                    UserAgent = context.Request.Headers["User-Agent"].ToString()
-                });
-            }
-            else
-            {
+        //    if (log == null)
+        //    {
+        //        db.VisitorLogs.Add(new VisitorLog
+        //        {
+        //            VisitorId = visitorId,
+        //            SessionId = sessionId,
+        //            VisitTime = DateTime.Now,
+        //            LastActiveTime = DateTime.Now,
+        //            // test sau sẽ dung IP thực tế
+        //            IpAddress = context.Connection.RemoteIpAddress?.ToString(),
+        //            UserAgent = context.Request.Headers["User-Agent"].ToString()
+        //        });
+        //    }
+        //    else
+        //    {
 
-                _logger.LogInformation("Existing visitor: " + visitorId);
-                log.LastActiveTime = DateTime.Now;
-                log.SessionId = sessionId;
-            }
+        //        _logger.LogInformation("Existing visitor: " + visitorId);
+        //        log.LastActiveTime = DateTime.Now;
+        //        log.SessionId = sessionId;
+        //    }
 
-            await db.SaveChangesAsync();
-            await _next(context);
-        }
+        //    await db.SaveChangesAsync();
+        //    await _next(context);
+        //}
     }
 
 }

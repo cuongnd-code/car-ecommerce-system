@@ -1,190 +1,175 @@
-﻿using ManageCars.Models;
-using ManageCars.Models.Request;
+﻿using ManageCars.Controllers.Service;
+using ManageCars.Hubs;
 using ManageCars.Models.ViewModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.DotNet.Scaffolding.Shared.Messaging;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.SignalR;
 
 namespace ManageCars.Controllers
 {
-	[Route("car")]
-	public class CarController : Controller
-	{
+    [Route("car")]
+    public class CarController : Controller
+    {
 
 
 
-		private readonly ILogger<CarController> _logger;
-		private readonly AppDbContext _context;
+        private readonly IHubContext<CarHub> _hubContext;
+
+
+        public readonly CarService _carService;
+
+        public CarController(CarService _carService, IHubContext<CarHub> _hubContext)
+        {
+
+            this._carService = _carService;
+            this._hubContext = _hubContext;
+
+        }
+
+        [HttpGet()]
+        public IActionResult Index()
+        {
+            return View();
+        }
+        [HttpGet("get-all")]
+        public async Task<IActionResult> GetAllCars()
+        {
+            var cars = await _carService.GetCarsAsync();
+            return Ok(cars);
+        }
+
+        [HttpGet("add-car")]
+        public IActionResult AddCar()
+        {
+            return View();
+        }
 
 
 
-		public CarController(ILogger<CarController> logger, AppDbContext dbContext)
-		{
-			_logger = logger;
-			_context = dbContext;
-		}
 
-		[HttpGet()]
-		public IActionResult Index()
-		{
-			return View();
-		}
+        [HttpPost("add-car")]
+        public async Task<IActionResult> AddCar(CarAddViewModel carViewModel)
+        {
 
 
-		[HttpGet("add-car")]
-		public IActionResult AddCar()
-		{
-			return View();
-		}
-		[HttpPost("add-car")]
-		public async Task<IActionResult> AddCar(CarViewModel carViewModel)
-		{
-
-
-			if (string.IsNullOrEmpty(carViewModel.Name) || carViewModel.Year <= 0 || carViewModel.Price <= 0)
-			{
-				ViewBag.ErrorMessage = "All fields are required.";
-				return View();
-			}
-
-			string filename;
-
-
-			if (carViewModel.Image != null && carViewModel.Image.Length > 0)
-			{
-
-				filename = Path.GetFileName(carViewModel.Image.FileName);
-				_logger.LogInformation("Filename: " + filename);
-				var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", filename);
-				//filemode.create neu chua co file thi tao moi file, neu co thi se ghi de len file cu
-				//day la luu file tren server
-				using (var stream = new FileStream(filepath, FileMode.Create))
-				{
-					await carViewModel.Image.CopyToAsync(stream);
-				}
-
-			}
-			else
-			{
-				filename = "default.png";
-			}
-
-			_context.Cars.Add(new Car
-			{
-				Name = carViewModel.Name,
-				Model = carViewModel.Model,
-				Year = carViewModel.Year,
-				Price = carViewModel.Price,
-				Image = filename,
-				CategoryId = carViewModel.CategoryId
-			});
-			_logger.LogInformation("ADD CAR: {CarName} ", carViewModel.Name);
-
-			_context.SaveChanges();
-			ViewBag.SuccessMessage = "Car added successfully.";
-
-			return View();
-		}
-		[HttpGet("car-list")]
-
-		public IActionResult CarList()
-		{
-			_logger.LogInformation("CAR LIST:");
-
-			return View();
-		}
-
-		[HttpPost("car-edit1")]
-		public JsonResult EditCar([FromBody] int carId)
-		{
-			var car = _context.Cars.FirstOrDefault(c => c.Id == carId);
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
 
 
 
-			return Json(car);
-		}
+            _carService.AddCar(carViewModel);
 
-		[HttpPost("car-edit2")]
-		public async Task<JsonResult> EditCar([FromForm] CarViewModel carViewModel)
-		{
-			string filename;
+            await _hubContext.Clients.All.SendAsync("AddCarNotification", "New car add ");
 
 
-			if (carViewModel.Image != null && carViewModel.Image.Length > 0)
-			{
 
-				filename = Path.GetFileName(carViewModel.Image.FileName);
-				_logger.LogInformation("Filename: " + filename);
-				var filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", filename);
-				//filemode.create neu chua co file thi tao moi file, neu co thi se ghi de len file cu
-				//day la luu file tren server
-				using (var stream = new FileStream(filepath, FileMode.Create))
-				{
-					await carViewModel.Image.CopyToAsync(stream);
-				}
+            ViewBag.SuccessMessage = "Car added successfully.";
 
-			}
-			else
-			{
-				filename = "default.png";
-			}
-			_context.Cars.Update(new Car
-			{
+            return View();
+        }
+        [HttpGet("car-list")]
 
-				Id = carViewModel.Id,
-				Name = carViewModel.Name,
-				Model = carViewModel.Model,
-				Year = carViewModel.Year,
-				Price = carViewModel.Price,
-				Image = filename,
-				CategoryId = carViewModel.CategoryId
-			});
-			_context.SaveChanges();
-			string message = "Car added successfully.";
-			return Json(message);
-		}
+        public IActionResult CarList()
+        {
+
+            return View();
+        }
 
 
-		[HttpDelete("delete-car/{carId}")]
-		public IActionResult DeleteCar(int carId)
-		{
 
-			_logger.LogInformation("DELETE CAR:");
+        [HttpPost("car-edit")]
+        public async Task<IActionResult> Edit([FromForm] CarAddViewModel carViewModel)
+        {
 
-			var car = _context.Cars.Find(carId);
-			if (car == null)
-			{
-				return NotFound("Car not found.");
-			}
-			_context.Cars.Remove(car);
-			_context.SaveChanges();
-			_logger.LogInformation("DELETE CAR: {CarId} ", carId);
-			return Ok(new { Message = "Car delete successfully" });
-		}
+
+
+
+            if (!ModelState.IsValid)
+            {
+                return View(carViewModel);
+            }
+            _carService.UpdateCarDetail(carViewModel);
+
+
+            await _hubContext.Clients.All.SendAsync("AddCarNotification", "a Car Have been update ");
+
+            ViewBag.SuccessMessage = "Car update successfully.";
+
+            return View();
+        }
+
+        [HttpGet("edit/{id}")]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var car = await _carService.GetCarById(id);
+
+            if (car == null)
+                return NotFound();
+
+            var model = new CarAddViewModel
+            {
+                Id = car.Id,
+                Name = car.Name,
+                Model = car.Model,
+                Year = car.Year,
+                Price = car.Price,
+                Stock = car.Stock,
+                CategoryId = car.CategoryId,
+                Description = car.CarDetail?.Description,
+
+                Detail = new CarDetailViewModel
+                {
+                    Engine = car.CarDetail?.Engine,
+                    Transmission = car.CarDetail?.Transmission,
+                    DriveType = car.CarDetail?.DriveType,
+                    FuelType = car.CarDetail?.FuelType,
+                    FuelConsumption = car.CarDetail?.FuelConsumption,
+                    Seats = car.CarDetail?.Seats,
+                    DoorCount = car.CarDetail?.DoorCount,
+                    ColorInterior = car.CarDetail?.ColorInterior,
+                    ColorExterior = car.CarDetail?.ColorExterior,
+                    Description = car.CarDetail?.Description
+                }
+            };
+
+            return View(model);
+        }
+
+
+        [HttpDelete("delete-car/{carId}")]
+        public async Task<IActionResult> DeleteCar(int carId)
+        {
+
+
+            var car = _carService.GetCarById(carId);
+            if (car == null)
+            {
+                return NotFound("Car not found.");
+            }
+
+            await _carService.GetCarById(carId);
+            return Ok(new { Message = "Car delete successfully" });
+        }
+
+
 
         [HttpGet]
         [Route("Detail/{carId}")]
         public IActionResult GetCarDetail(int carId)
         {
-			var car = _context.Cars
-				.Include(c => c.CarDetail)
-				.Include(c => c.Category)
-                .FirstOrDefault(c => c.Id == carId);
+            var car = _carService.GetCarDetailCategory(carId);
 
             if (car == null)
             {
                 return NotFound("Car not found.");
             }
 
-			
 
-
-            return View("CarDetail",car);
+            return View("CarDetail", car);
 
         }
 
-	}
+    }
 
 }

@@ -5,49 +5,10 @@
 
 
 
-<!-- Overlay -->
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-<!-- Main Content -->
-<div class="main-content" id="main-content">
-	<nav class="navbar navbar-light bg-white shadow-sm sticky-top">
-		<div class="container-fluid d-flex justify-content-between align-items-center">
-			<div class="d-flex align-items-center gap-2">
-				<button class="btn btn-light" id="toggleSidebar"><i class="bi bi-list fs-4"></i></button>
-			</div>
 
-			<div class="d-flex align-items-center gap-3">
-				<input type="text" class="form-control d-none d-md-block" placeholder="Search...">
-				<i class="bi bi-bell fs-5"></i>
-				<div class="dropdown">
-					<button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">English</button>
-					<ul class="dropdown-menu dropdown-menu-end">
-						<li><a class="dropdown-item" href="#">English</a></li>
-						<li><a class="dropdown-item" href="#">Hindi</a></li>
-					</ul>
-				</div>
-				<div class="dropdown">
-					<button class="btn btn-light d-flex align-items-center dropdown-toggle"
-							data-bs-toggle="dropdown">
-						<img src="https://devomatemarket.com/favicon.png" class="rounded-circle me-2"
-							 style="width:36px;height:36px;">
-						<div class="text-start">
-							<div class="fw-bold">Ayush Gandhi</div>
-							<small class="text-muted">Admin</small>
-						</div>
-					</button>
-					<ul class="dropdown-menu dropdown-menu-end">
-						<li><a class="dropdown-item" href="#">Profile</a></li>
-						<li><a class="dropdown-item" href="#">Settings</a></li>
-						<li>
-							<hr class="dropdown-divider">
-						</li>
-						<li><a class="dropdown-item" href="#">Logout</a></li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</nav>
+
+
 
 	<div class="container-fluid py-4">
 
@@ -56,29 +17,29 @@
 			<div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
 				<h5 class="fw-semibold m-0 text-dark">📋 Order Lists</h5>
 				<div class="d-flex flex-wrap gap-2">
-					<select class="form-select form-select-sm" style="width:auto;">
+				<select id="filter-sortby" class="form-select form-select-sm" style="width:auto;">
 						<option>Filter By</option>
 						<option>Date</option>
 						<option>Status</option>
 					</select>
-					<select class="form-select form-select-sm" style="width:auto;">
+				<select id="filter-date" class="form-select form-select-sm" style="width:auto;">
 						<option>Date</option>
 						<option>Newest</option>
 						<option>Oldest</option>
 					</select>
-					<select class="form-select form-select-sm" style="width:auto;">
-						<option>Order Type</option>
-						<option>Book</option>
-						<option>Medicine</option>
-						<option>Watch</option>
-					</select>
-					<select class="form-select form-select-sm" style="width:auto;">
-						<option>Order Status</option>
-						<option>Completed</option>
-						<option>Processing</option>
-						<option>Rejected</option>
-					</select>
-					<button class="btn btn-link text-danger fw-semibold text-decoration-none">
+
+				<select id="filter-status" class="form-select form-select-sm">
+					<option value="">Order Status</option>
+					<option value="0">New</option>
+
+					<option value="1">Contacted</option>
+					<option value="5">Completed</option>
+					<option value="2">Deposit</option>
+					<option value="3">Viewing Scheduled</option>
+					<option value="4">Negotiating</option>
+					<option value="6">Cancelled</option>
+				</select>
+				<button id="reset-filter" class="btn btn-link text-danger fw-semibold text-decoration-none">
 						🔁 Reset Filter
 					</button>
 				</div>
@@ -153,7 +114,7 @@
 
 						<hr />
 
-						<div class="meeting-form mt-4 hidden d-none">
+						<div class="meeting-form mt-4 d-none">
 							<h4 class="mb-3 text-success"><i class="bi bi-calendar-event"></i> Schedule a Meeting</h4>
 
 							@model Meeting
@@ -189,6 +150,69 @@
 									</button>
 								</div>
 							</form>
+						</div> 
+
+
+						<div id="meetingDetail" class="mt-4">
+
+							<div class="card shadow border-0">
+
+								<div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+									<h5 class="mb-0">
+										<i class="bi bi-calendar-check"></i> Meeting Detail
+									</h5>
+
+									<span id="meet-status" class="badge bg-primary">
+										
+									</span>
+								</div>
+
+								<div class="card-body">
+
+									<div class="row mt-3">
+										<div class="col-md-6">
+											<p>
+												<i class="bi bi-clock text-secondary"></i>
+												<strong>Start Time:</strong><br />
+												<span id="meet-time"></span>
+											</p>
+										</div>
+
+										<div class="col-md-6">
+											<p>
+												<i class="bi bi-geo-alt text-danger"></i>
+												<strong>Location:</strong><br />
+												<span id="meet-location"></span>
+											</p>
+										</div>
+									</div>
+
+									<div class="mt-3">
+										<strong>
+											<i class="bi bi-card-text text-info"></i>
+											Description:
+										</strong>
+
+										<div id="meet-Description" class="p-3 bg-light rounded mt-2">
+										</div>
+									</div>
+
+
+									<div class="mt-4 text-end" id="meeting-actions">
+										<button id="btn-complete" class="btn btn-success me-2">
+											<i class="bi bi-check-circle"></i>
+											Hoàn thành
+										</button>
+
+										<button id="btn-cancel" class="btn btn-danger">
+											<i class="bi bi-x-circle"></i>
+											Hủy
+										</button>
+									</div>
+
+								</div>
+							</div>
+
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -199,7 +223,79 @@
 			</div>
 		</div>
 
-	
+	<!--Model contact -->
+		<div id="update-order" class="modal"  tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+
+					<div class="modal-header bg-primary text-white">
+						<h5 class="modal-title">Update Order</h5>
+						<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+					</div>
+
+					<div class="modal-body">
+
+						<input type="hidden" id="update-order-id" />
+
+						<div class="row">
+
+							<!-- Status -->
+							<div class="col-md-6 mb-3">
+								<label class="form-label">Status</label>
+								<select id="update-status" class="form-select">
+									<option value="2">Deposit</option>
+									<option value="3">Viewing Scheduled</option>
+									<option value="4">Negotiating</option>
+									<option value="5">Completed</option>
+									<option value="6">Cancelled</option>
+								</select>
+							</div>
+
+							<!-- Assigned To -->
+							<div class="col-md-6 mb-3">
+								<label class="form-label">Assigned To</label>
+								<input type="text" id="update-assigned" class="form-control" placeholder="Sales name" />
+							</div>
+
+							<!-- Final Price -->
+							<div class="col-md-6 mb-3">
+								<label class="form-label">Final Price</label>
+								<input type="number" id="update-finalprice" class="form-control" />
+							</div>
+
+							<!-- Deposit -->
+							<div class="col-md-6 mb-3">
+								<label class="form-label">Deposit Amount</label>
+								<input type="number" id="update-deposit" class="form-control" />
+							</div>
+
+							<!-- Payment Method -->
+							<div class="col-md-6 mb-3">
+								<label class="form-label">Payment Method</label>
+								<select id="update-payment" class="form-select">
+									<option value="">-- Select --</option>
+									<option value="Cash">Cash</option>
+									<option value="Bank Transfer">Bank Transfer</option>
+									<option value="Installment">Installment</option>
+								</select>
+							</div>
+
+							<!-- Completion Note -->
+							<div class="col-12 mb-3">
+								<label class="form-label">Note</label>
+								<textarea id="update-note" class="form-control" rows="3"></textarea>
+							</div>
+
+						</div>
+
+					</div>
+					<div class="modal-footer">
+						<button id="save-update" type="button" class="btn btn-primary">Save changes</button>
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
 		<style>
 			.table tbody tr:hover {
@@ -227,7 +323,6 @@
 
 
 
-</div>
 
 
 
@@ -289,18 +384,39 @@
 
 
 
+	document.querySelectorAll('select').forEach(select => {
+		select.addEventListener('change', () => OrderList(1));
+	});
 
 
 
+	document.querySelector('#reset-filter').addEventListener('click', () => {
+
+		document.querySelector('#filter-sortby').selectedIndex = 0;
+		document.querySelector('#filter-date').selectedIndex = 0;
+		document.querySelector('#filter-status').selectedIndex = 0;
+
+		OrderList(1);
+	});
+
+	
 
 	function OrderList(page) {
 
+		const sortBy = document.querySelector('#filter-sortby').value;
+		const sortDate = document.querySelector('#filter-date').value;
+		const status = document.querySelector('#filter-status').value;
+		
 		fetch('/order/list', {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ _pageNumber: page, _pageSize: 6 })
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				_pageNumber: page,
+				_pageSize: 6,
+				sortBy: sortBy,
+				sortDate: sortDate,
+				status: status
+			})
 		})
 			.then(response => response.json())
 			.then(data => {
@@ -327,6 +443,10 @@
 						<button class="model-order-btn btn btn-primary btn-sm" type="button"
 									data-bs-toggle="modal" data-bs-target="#contact-customer"
 								value="${order.id}">Contact</button>
+
+								<button  class="model-update-order btn btn-primary btn-sm" type="button"
+											data-bs-toggle="modal" data-bs-target="#update-order"
+									value="${order.id}">Update</button>
 						
 					</td>	
 					`; 
@@ -336,15 +456,30 @@
 				const buttons = document.querySelectorAll('.model-order-btn');
 				buttons.forEach(btn => {
 					btn.addEventListener('click', function () {
-						// 'this.value' lấy giá trị từ thuộc tính value="${order.id}"
 						const orderId = this.value;
 						console.log("Đang lấy thông tin cho đơn hàng ID:", orderId);
 
-						// Gọi hàm của bạn
 						getCustomerInfor(orderId);
 					});
 				});
 
+				const buttonsUpdate = document.querySelectorAll('.model-update-order');
+				buttonsUpdate.forEach(btn => {
+					btn.addEventListener('click', function () {
+						const orderId = this.value;
+						console.log("Đang lấy thông tin cho đơn hàng ID:", orderId);
+
+						document.querySelector('#update-order-id').value = orderId
+
+
+					});
+				});
+
+
+				document.querySelector("#save-update").addEventListener('click', function(){
+					submitUpdateOrder()
+
+				})
 
 
 				createPagination({
@@ -387,10 +522,58 @@
 				model.querySelector('#message').textContent =  data.orders.message
 				model.querySelector('#hidden-order-id').value = orderId
 
+				const form = model.querySelector('.meeting-form')
+
+				const meetingModel = model.querySelector('#meetingDetail')
+
+
+				form.classList.add("d-none");
+
+				meetingModel.classList.add("d-none")
+
+
+				const meetingsubmit = document.querySelector("#btn-complete")
+
+				meetingsubmit.addEventListener('click', function () {
+					CompleteMeeting(data.meetdetail.id)
+				});
+
+				const meetingcancel = document.querySelector("#btn-cancel")
+
+				meetingsubmit.classList.remove("d-none")
+				meetingcancel.classList.remove("d-none")
+
+
+				meetingcancel.addEventListener('click', function () {
+
+					CancelMeeting(data.meetdetail.id)
+				});
 
 
 
-						
+				if (data.meetdetail.status !== "Scheduled") {
+					meetingsubmit.classList.add("d-none")
+					meetingcancel.classList.add("d-none")
+
+				}
+				console.log(data.meetdetail.status)
+
+
+				if (!data.isMeeting) {
+
+					form.classList.remove("d-none");
+
+
+				}else{
+					meetingModel.classList.remove("d-none");
+					model.querySelector('#meet-time').textContent = data.meetdetail.startTime;
+					model.querySelector('#meet-location').textContent = data.meetdetail.location;
+					model.querySelector('#meet-Description').textContent = data.meetdetail.description;
+
+					model.querySelector('#meet-status').textContent = data.meetdetail.status;
+
+				}
+				
 				CreateMeeting()
 
 			})
@@ -417,11 +600,78 @@
 
 
 
-	function CheckMeeting() {
+	function CompleteMeeting(Id) {
+
+		
+
+		fetch('/meeting/complete', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(Id)
+		}).then(response => response.json())
+		.then(data => {
+
+
+				if (data.success) {
+									Swal.fire({
+										title: "Good job!",
+										text: "complete ",
+										icon: "success"
+									});
+								}
+								else {
+									Swal.fire({
+										icon: "error",
+										title: "Oops...",
+									text: "cant complete!"
+									});
+								}
+
+			
+
+					
+		})
+			.catch(error => console.error('Error fetching faild complete:', error));
 
 
 		
 	}
+
+
+	function CancelMeeting(Id) {
+
+
+		fetch('/meeting/cancel', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(Id)
+		}).then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					Swal.fire({
+						title: "Good job!",
+						text: "cancel ",
+						icon: "success"
+					});
+				}
+				else {
+					Swal.fire({
+						icon: "error",
+						title: "Oops...",
+						text: "cant cancel!"
+					});
+				}
+			})
+			.catch(error => console.error('Error fetching faild complete:', error));
+
+
+
+	}
+	
 
 
 	function CreateMeeting() {
@@ -477,6 +727,43 @@
 
 		
 	}
+
+
+	
+	function submitUpdateOrder() {
+
+		const data = {
+			id: document.getElementById('update-order-id').value,
+			status: document.getElementById('update-status').value,
+			assignedTo: document.getElementById('update-assigned').value,
+			finalPrice: document.getElementById('update-finalprice').value,
+			depositAmount: document.getElementById('update-deposit').value,
+			paymentMethod: document.getElementById('update-payment').value,
+			completionNote: document.getElementById('update-note').value
+		};
+
+		fetch('/order/process', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(data)
+		})
+			.then(res => res.json())
+			.then(result => {
+				
+
+				if (result.success) {
+					Swal.fire({
+						title: "Good job!",
+						text: "up success",
+						icon: "success"
+					});
+					OrderList(1);
+					bootstrap.Modal.getInstance(document.getElementById('updateOrderModal')).hide();
+				}
+			});
+	}
+
+
 
 
 </script>

@@ -1,7 +1,6 @@
 ﻿
 using System.Security.Claims;
 using ManageCars.Controllers.Service;
-using ManageCars.Models;
 using ManageCars.Models.Request;
 using ManageCars.Models.ViewModel;
 using Microsoft.AspNetCore.Authentication;
@@ -13,163 +12,154 @@ namespace ManageCars.Controllers
 
 
 
-    public class HomeController : Controller
-    {
-        private readonly ILogger<HomeController> _logger;
+	public class HomeController : Controller
+	{
 
-        private readonly AppDbContext _context;
 
-        private readonly HomeService homeService;
+		private readonly HomeService homeService;
 
 
 
-        public HomeController(ILogger<HomeController> logger, AppDbContext dbContext)
-        {
-            _logger = logger;
-            _context = dbContext;
-            homeService = new HomeService(_logger, _context);
+		public HomeController(HomeService homeService)
+		{
+			this.homeService = homeService;
+		}
 
+		public IActionResult Register()
+		{
 
-        }
+			return View();
+		}
 
-        public IActionResult Register()
-        {
+		public IActionResult Index()
+		{
 
-            return View();
-        }
+			return View();
+		}
 
-        public IActionResult Index()
-        {
 
-            return View();
-        }
+		[HttpGet("error")]
+		public IActionResult ThrowError()
+		{
 
+			throw new KeyNotFoundException("Xe không ton tai");
+		}
 
-        [HttpGet("error")]
-        public IActionResult ThrowError()
-        {
 
-            throw new KeyNotFoundException("Xe không ton tai");
-        }
 
+		[HttpPost()]
+		public IActionResult Register(RegisterViewModel registerViewModel)
+		{
 
 
-        [HttpPost()]
-        public IActionResult Register(RegisterViewModel registerViewModel)
-        {
 
+			MessageResult result = homeService.RegisterUser(registerViewModel);
+			if (!result.Success)
+			{
+				TempData["Error"] = result.Reason;
 
-            _logger.LogInformation("sadasdasdasdasđsấd");
+				return RedirectToAction("Register");
 
-            MessageResult result = homeService.RegisterUser(registerViewModel);
-            if (!result.Success)
-            {
-                TempData["Error"] = result.Reason;
+			}
 
-                return RedirectToAction("Register");
 
-            }
+			TempData["Success"] = result.Reason;
 
 
-            TempData["Success"] = result.Reason;
 
+			return RedirectToAction("Register", "Home");
+		}
 
+		[HttpPost()]
+		public async Task<IActionResult> Login(LoginViewModel login)
+		{
 
-            return RedirectToAction("Register", "Home");
-        }
 
-        [HttpPost()]
-        public async Task<IActionResult> Login(LoginViewModel login)
-        {
+			MessageResult result = homeService.Login(login);
 
+			if (!result.Success)
+			{
+				TempData["Error"] = result.Reason;
 
-            MessageResult result = homeService.Login(login);
+				return RedirectToAction("Login");
 
-            if (!result.Success)
-            {
-                TempData["Error"] = result.Reason;
+			}
 
-                return RedirectToAction("Login");
+			var claims = new List<Claim>
+			{
+				new Claim(ClaimTypes.Name, login.Username!),
+				new Claim(ClaimTypes.Role, "User")
+			};
 
-            }
+			var identity = new ClaimsIdentity(claims, "MyCookieAuth");
 
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, login.Username!),
-                new Claim(ClaimTypes.Role, "User")
-            };
+			var principal = new ClaimsPrincipal(identity);
 
-            var identity = new ClaimsIdentity(claims, "MyCookieAuth");
+			await HttpContext.SignInAsync("MyCookieAuth", principal);
 
-            var principal = new ClaimsPrincipal(identity);
+			TempData["Success"] = result.Reason;
 
-            await HttpContext.SignInAsync("MyCookieAuth", principal);
 
 
+			return RedirectToAction("", "Home");
+		}
 
-            TempData["Success"] = result.Reason;
+		[HttpGet()]
+		public async Task<IActionResult> Logout(LoginViewModel login)
+		{
 
 
+			await HttpContext.SignOutAsync("MyCookieAuth");
 
-            return RedirectToAction("", "Home");
-        }
+			return RedirectToAction("", "Home");
 
-        [HttpGet()]
-        public async Task<IActionResult> Logout(LoginViewModel login)
-        {
 
 
-            await HttpContext.SignOutAsync("MyCookieAuth");
+		}
 
-            return RedirectToAction("", "Home");
+		[HttpGet()]
+		public IActionResult Login()
+		{
+			return View("Login");
+		}
+		[HttpPost()]
 
 
 
-        }
+		// async di cung kieu await 
+		//public async Task<IActionResult> CheckLogin(string account, string password)
+		//{
+		//	var account1 = _context.Accounts.FirstOrDefault(a => a.AccountName == account && a.AccountPassword == password);
 
-        [HttpGet()]
-        public IActionResult Login()
-        {
-            return View("Login");
-        }
-        [HttpPost()]
+		//	_logger.LogInformation(account1.role);
 
+		//	var Claims = new List<Claim>
+		//	{
+		//		new Claim(ClaimTypes.Name, account),
+		//		new Claim(ClaimTypes.NameIdentifier, account1.Id),
+		//		new Claim(ClaimTypes.Role, account1.role),
+		//	};
 
 
-        // async di cung kieu await 
-        //public async Task<IActionResult> CheckLogin(string account, string password)
-        //{
-        //	var account1 = _context.Accounts.FirstOrDefault(a => a.AccountName == account && a.AccountPassword == password);
+		//	var identity = new ClaimsIdentity(Claims, "MyCookieAuth");
+		//	var principal = new ClaimsPrincipal(identity);
 
-        //	_logger.LogInformation(account1.role);
+		//	await HttpContext.SignInAsync("MyCookieAuth", principal);
 
-        //	var Claims = new List<Claim>
-        //	{
-        //		new Claim(ClaimTypes.Name, account),
-        //		new Claim(ClaimTypes.NameIdentifier, account1.Id),
-        //		new Claim(ClaimTypes.Role, account1.role),
-        //	};
+		//	return RedirectToAction("shopping", "shop");
+		//}
 
 
-        //	var identity = new ClaimsIdentity(Claims, "MyCookieAuth");
-        //	var principal = new ClaimsPrincipal(identity);
 
-        //	await HttpContext.SignInAsync("MyCookieAuth", principal);
 
-        //	return RedirectToAction("shopping", "shop");
-        //}
+		public IActionResult Privacy()
+		{
+			return View();
+		}
 
 
 
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
-
-
-
-
-    }
+	}
 }

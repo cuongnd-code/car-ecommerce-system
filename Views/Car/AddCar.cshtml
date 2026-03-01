@@ -1,56 +1,156 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model ManageCars.Models.ViewModel.CarAddViewModel
 @{
-
-	var years = Enumerable.Range(1950, DateTime.Now.Year - 1950 + 1).Reverse();
+    Layout = "_AdminLayout";
+    var years = Enumerable.Range(1950, DateTime.Now.Year - 1950 + 1).Reverse();
 }
 
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">Add New Car</h4>
+        </div>
+
+        <div class="card-body">
+            <form asp-controller="Car"
+                  asp-action="AddCar"
+                  method="post"
+                  enctype="multipart/form-data">
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Name -->
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label fw-bold"></label>
+                    <input asp-for="Name" class="form-control" placeholder="Enter car name" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <!-- Model -->
+                <div class="mb-3">
+                    <label asp-for="Model" class="form-label fw-bold"></label>
+                    <input asp-for="Model" class="form-control" placeholder="Enter model" />
+                    <span asp-validation-for="Model" class="text-danger"></span>
+                </div>
+
+                <!-- Year -->
+                <div class="mb-3">
+                    <label asp-for="Year" class="form-label fw-bold"></label>
+                    <select asp-for="Year" class="form-select">
+                        <option value="">-- Select Year --</option>
+                        @foreach (var y in years)
+                        {
+                            <option value="@y">@y</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Year" class="text-danger"></span>
+                </div>
+
+                <!-- Price -->
+                <div class="mb-3">
+                    <label asp-for="Price" class="form-label fw-bold"></label>
+                    <input asp-for="Price"
+                           type="number"
+                           class="form-control"
+                            />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+
+                <!-- Category -->
+                <div class="mb-3">
+                    <label asp-for="CategoryId" class="form-label fw-bold"></label>
+                    <select asp-for="CategoryId" class="form-select">
+                        <option value="">-- Select Category --</option>
+                        <option value="1">Sedan</option>
+                        <option value="2">SUV</option>
+                        <option value="3">Truck</option>
+                        <option value="4">Coupe</option>
+                        <option value="5">Hatchback</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <!-- Image -->
+                <div class="mb-3">
+                    <label asp-for="Image" class="form-label fw-bold"></label>
+                    <input asp-for="Image" type="file" class="form-control" />
+                    <span asp-validation-for="Image" class="text-danger"></span>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label fw-bold"></label>
+                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+              
+
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <div class="alert alert-danger mt-3">
+                        @ViewBag.ErrorMessage
+                    </div>
+                }
+
+                @if (ViewBag.SuccessMessage != null)
+                {
+                    <div class="alert alert-success mt-3">
+                        @ViewBag.SuccessMessage
+                    </div>
+                }
+
+                <hr />
+                <h5 class="fw-bold mt-4">Car Specifications</h5>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Detail.Engine" class="form-label"></label>
+                        <input asp-for="Detail.Engine" class="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Detail.Transmission" class="form-label"></label>
+                        <input asp-for="Detail.Transmission" class="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Detail.DriveType" class="form-label"></label>
+                        <input asp-for="Detail.DriveType" class="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Detail.FuelType" class="form-label"></label>
+                        <input asp-for="Detail.FuelType" class="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Detail.Seats" class="form-label"></label>
+                        <input asp-for="Detail.Seats" type="number" class="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Detail.DoorCount" class="form-label"></label>
+                        <input asp-for="Detail.DoorCount" type="number" class="form-control" />
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label asp-for="Detail.Description" class="form-label"></label>
+                        <textarea asp-for="Detail.Description" class="form-control"></textarea>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="/car/car-list" class="btn btn-secondary">
+                        ← Back
+                    </a>
+
+                    <button type="submit" class="btn btn-success">
+                        Save Car
+                    </button>
+                </div>
+            </form>
 
 
-@addTagHelper*, Microsoft.AspNetCore.Mvc.TagHelpers
-@addTagHelper*, AuthorizingTagHelperApp.TagHelpers
-<p>Manager Car</p>
-
-@model ManageCars.Models.ViewModel.CarViewModel
-<form asp-controller="Car" asp-action="AddCar" method="post" enctype="multipart/form-data">
-	<label asp-for="Name" class="form-label"></label>
-	<input asp-for="Name" class="form-control" />
-	<label asp-for="Year"></label>
-	<select asp-for="Year" class="form-control">
-		<option value="">pick a year</option>
-		@foreach(var y in years)
-		{
-			<option value="@y"> @y</option>
-		}
-	</select>
-	<label asp-for="Model" class="form-label"></label>
-	<input asp-for="Model" class="form-control" />
-	<label asp-for="Color" class="form-label"></label>
-	<input asp-for="Color" class="form-control" />
-	<label asp-for="Price" class="form-label"></label>
-	<input asp-for="Price" type="range" min="500" max="50000"/>
-	<select asp-for="CategoryId" class="form-control">
-		<option value="">-- Chọn danh mục --</option>
-		<option value="1">1 - Sedan</option>
-		<option value="2">2 - SUV</option>
-		<option value="3">3 - Truck</option>
-		<option value="4">4 - Coupe</option>
-		<option value="5">5 - Hatchback</option>
-	</select>
-	<label asp-for="Image" class="form-label" ></label>
-	<input asp-for="Image" type="file" class="form-control" />
-	<label asp-for="Description" class="form-label"></label>
-	<input asp-for="Description" class="form-control" />
-
-	<input type="submit" class="form-control" />
-	<p>@ViewBag.ErrorMessage</p>
-	<p>@ViewBag.SuccessMessage</p>
-
-
-	</form>
-
-
-
-		
-	
+        </div>
+    </div>
+</div>

@@ -3,61 +3,302 @@
 *@
 @{
 }
-<div class="home-explore container-fluid d-flex  justify-content-around align-items-center vh-100 gap-5">
-    <div id="explore-1" class="d-flex flex-column " style="width:70vh; height: 20vh; margin-bottom: 30vh; ">
-        <h5>
-            Discover a New Level of Comfort
-        </h5>
-        <h class="display-2 fw-bolder mt-2 mb-5">
-            Discover a New Level of Comfort
-        </h>
 
-        <div class="">
-            <BUtton class="me-4 btn btn-light">Discover More</BUtton>
-            <BUtton class="btn btn-light">meet Lambogini</BUtton>
+<!-- HERO SECTION -->
+<section class="hero-section">
+    <div class="hero-overlay"></div>
 
+    <div class="hero-content container">
+        <div class="hero-left">
+            <span class="sub-title">NEW IN STOCK</span>
+            <h1>Upgrade Your <br /> Driving Experience</h1>
+
+            <div class="hero-buttons">
+                <a href="#" class="btn-light">Discover More</a>
+                <a href="#" class="btn-outline">Meet Horizon GT</a>
+            </div>
+        </div>
+
+        <div class="hero-right">
+            <div class="search-box">
+                <h3>Find Your Ride</h3>
+
+                <select class="form-select">
+                    <option>Brand</option>
+                    <option>Toyota</option>
+                    <option>Honda</option>
+                    <option>BMW</option>
+                </select>
+
+                <select class="form-select">
+                    <option>Model</option>
+                    <option>Proxima 4X</option>
+                </select>
+
+                <select class="form-select">
+                    <option>Type</option>
+                    <option>Sedan</option>
+                </select>
+
+                <button class="btn-search">Get Started</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- FEATURE SECTION -->
+<section class="home-feature">
+    <div class="container">
+
+        <div class="feature-grid">
+            <div class="feature-box">
+                <span>01</span>
+                <h3>Variety of Cars</h3>
+                <p>We provide a wide range of vehicles to meet every need and budget.</p>
+            </div>
+
+            <div class="feature-box">
+                <span>02</span>
+                <h3>Competitive Pricing</h3>
+                <p>Transparent pricing with the best deals in the market.</p>
+            </div>
+
+            <div class="feature-box">
+                <span>03</span>
+                <h3>24/7 Support</h3>
+                <p>Our team is always ready to assist you anytime.</p>
+            </div>
+        </div>
+
+        <!-- DISCOVER SECTION -->
+        <div class="discover-section">
+            <div class="discover-text">
+                <span class="label">CLASSICS</span>
+                <h2>Discover A New <br /> Level Of Comfort</h2>
+                <p>
+                    We're here to make the car-buying process as easy and stress-free as possible.
+                </p>
+                <button class="discover-btn">Discover More</button>
+            </div>
+
+            <div class="discover-image">
+                <img src="/images/car-interior.jpg" />
+            </div>
         </div>
 
     </div>
-    <div id="explore-2" class="border border-1 border border-secondary h-50 d-flex " style="margin-right: 10vh;">
-        <form action="" class="d-flex flex-column container px-4 py-3 gap-3">
-            <h class="text-center fs-1 fw-bolder "> Search your own car</h>
-            <select class="form-select">
-                <option value="">Tất cả hãng xe</option>
-                <option value="toyota">Toyota</option>
-                <option value="honda">Honda</option>
-                <option value="ford">Ford</option>
-                <option value="mercedes">Mercedes</option>
-                <option value="bmw">BMW</option>
-            </select>
+</section>
 
-            <select class="form-select">
-                <option value="">Tất cả mức giá</option>
-                <option value="0-500">Dưới 500 triệu</option>
-                <option value="500-1000">500 triệu - 1 tỷ</option>
-                <option value="1000-2000">1 - 2 tỷ</option>
-                <option value="2000+">Trên 2 tỷ</option>
-            </select>
-            <select class="form-select">
-                <option value="">Tất cả tình trạng</option>
-                <option value="new">Xe mới</option>
-                <option value="used">Xe đã qua sử dụng</option>
-                <option value="pre-owned">Xe cũ</option>
-            </select>
-            <button type="button" class="submit btn btn-outline-light " style="--bs-btn-bg: #9b103a">Get start </button>
-        </form>
+<section class="cta-section">
+    <div class="cta-overlay"></div>
+
+    <div class="container cta-content">
+        <div>
+            <h2>Get A Fair Price For Your Car: <br /> Sell To Us Today</h2>
+            <p>
+                We are committed to providing our customers with exceptional service,
+                competitive pricing, and a wide range of vehicles.
+            </p>
+        </div>
+
+        <div>
+            <a href="#" class="cta-btn">Get Started</a>
+        </div>
     </div>
-</div>
+</section>
+
+
+
+
+
 
 <style>
-    .home-explore::before {
-        content: "";
-        position: absolute;
-        top: 0; 
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('@Url.Content("~/images/anhnen.jpg")') center/cover no-repeat;
-        z-index: -1;
+  
+    .hero-section {
+        position: relative;
+        height: 100vh;
+        background: url('/images/anhnen.jpg') center/cover no-repeat;
+        padding-top: 100px; /* bằng chiều cao header */
+
+        display: flex;
+        align-items: center;
     }
+
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+    }
+
+    .hero-content {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+    }
+
+    .hero-left h1 {
+        font-size: 60px;
+        font-weight: 700;
+    }
+
+    .sub-title {
+        letter-spacing: 3px;
+        font-size: 13px;
+    }
+
+    .hero-buttons {
+        margin-top: 30px;
+    }
+
+    .btn-light {
+        background: white;
+        color: black;
+        padding: 12px 25px;
+        text-decoration: none;
+        margin-right: 15px;
+    }
+
+    .btn-outline {
+        border: 1px solid white;
+        padding: 12px 25px;
+        color: white;
+        text-decoration: none;
+    }
+
+
+    /* ===== SEARCH BOX ===== */
+
+    .search-box {
+        background: rgba(255,255,255,0.1);
+        padding: 40px;
+        width: 350px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.3);
+    }
+
+        .search-box h3 {
+            margin-bottom: 20px;
+        }
+
+        .search-box select {
+            margin-bottom: 15px;
+        }
+
+    .btn-search {
+        width: 100%;
+        background: #b3123b;
+        color: white;
+        border: none;
+        padding: 12px;
+    }
+
+
+    /* ================= FEATURE ================= */
+
+    .home-feature {
+        padding: 100px 0;
+        background: #f4f4f4;
+    }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        gap: 40px;
+        margin-bottom: 100px;
+    }
+
+    .feature-box {
+        background: white;
+        padding: 50px;
+        border: 1px solid #ddd;
+        text-align: center;
+        position: relative;
+    }
+
+        .feature-box span {
+            position: absolute;
+            top: -15px;
+            left: 30px;
+            font-size: 13px;
+            letter-spacing: 2px;
+            color: gray;
+        }
+
+
+    /* ================= DISCOVER ================= */
+
+    .discover-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+    }
+
+    .discover-text h2 {
+        font-size: 48px;
+        margin: 20px 0;
+    }
+
+    .discover-btn {
+        padding: 12px 28px;
+        border: 1px solid black;
+        background: transparent;
+    }
+
+        .discover-btn:hover {
+            background: black;
+            color: white;
+        }
+
+    .discover-image img {
+        width: 100%;
+    }
+
+
+
+    /* ================= CTA ================= */
+
+    .cta-section {
+        position: relative;
+        background: url('/images/black-car.jpg') center/cover no-repeat;
+        padding: 120px 0;
+        color: white;
+    }
+
+    .cta-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+    }
+
+    .cta-content {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .cta-content h2 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .cta-content p {
+            max-width: 600px;
+            color: #ddd;
+        }
+
+    .cta-btn {
+        background: #b3123b;
+        padding: 15px 35px;
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    
 </style>

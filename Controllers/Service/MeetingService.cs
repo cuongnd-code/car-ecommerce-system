@@ -82,6 +82,31 @@ namespace ManageCars.Controllers.Service
 		}
 
 
+		public async Task CompleteMeeting(int id)
+		{
+			var meet = await _context.Meeting
+									 .FirstOrDefaultAsync(c => c.Id == id);
+
+			if (meet == null)
+				return;
+
+			meet.Status = MeetingStatus.Completed;
+
+			await _context.SaveChangesAsync();
+		}
+		public async Task CancelMeeting(int id)
+		{
+			var meet = await _context.Meeting
+									 .FirstOrDefaultAsync(c => c.Id == id);
+
+			if (meet == null)
+				return;
+
+			meet.Status = MeetingStatus.Canceled;
+
+			await _context.SaveChangesAsync();
+		}
+
 
 
 	}

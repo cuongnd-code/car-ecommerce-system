@@ -1,6 +1,6 @@
 using System.Net.WebSockets;
+using ManageCars.Controllers.Service;
 using ManageCars.Hubs;
-using ManageCars.Middleware;
 using ManageCars.Models; // Goi namespace chua lop DbContext (AppDbContext) cua ban
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore; // Dung de cau hinh Entity Framework Core
@@ -8,6 +8,12 @@ using Microsoft.EntityFrameworkCore; // Dung de cau hinh Entity Framework Core
 // Tao doi tuong builder - day la buoc dau tien khoi tao ung dung web (chua config, DI container, logging...)
 var builder = WebApplication.CreateBuilder(args);
 var orderWebSocketHandler = new ManageCars.Middleware.OrderWebSocketHandler();
+
+builder.Services.AddScoped<AdminService>();
+builder.Services.AddScoped<CarService>();
+builder.Services.AddScoped<HomeService>();
+
+builder.Services.AddScoped<MeetingService>();
 
 
 
@@ -131,7 +137,7 @@ app.Use(async (context, next) =>
 
 app.UseSession();
 
-app.UseMiddleware<VisitorTrackingMiddleware>();
+//app.UseMiddleware<VisitorTrackingMiddleware>();
 // Thiet lap tuyen mac dinh: URL / se chay HomeController, action Index
 // Vi du: /Car/List -> goi CarController.List()
 //        / -> goi HomeController.Index()

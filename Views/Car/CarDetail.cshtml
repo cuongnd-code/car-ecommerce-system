@@ -6,7 +6,13 @@
 
 @model ManageCars.Models.Car
 
-<div class="container my-5">
+
+<div style="height: 90px;" class="bg-black">
+    
+</div>
+
+
+<div class="container my-5 ">
 
 
     <div class="row g-4">
@@ -127,7 +133,7 @@
                     <div class="price-box mt-4 p-3 rounded-4" style="background: #FFFBEB; border: 1px dashed #FDE68A;">
                         <div class="d-flex justify-content-between mb-2 small">
                             <span>MSRP (List Price):</span>
-                            <span class="fw-bold">@Model.Price?.ToString("N0") VNĐ</span>
+                            <span class="fw-bold">@Model.Price.ToString("N0") VNĐ</span>
                         </div>
 
                         <div class="d-flex justify-content-between mb-2 small text-success">
@@ -140,7 +146,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="fw-bold">Estimated Total:</span>
                             <span class="h4 fw-bold mb-0 text-dark">
-                                @((Model.Price - 500000)?.ToString("N0") ?? "Contact for price") VNĐ
+                                @((Model.Price - 500000).ToString("N0") ?? "Contact for price") VNĐ
                             </span>
                         </div>
                     </div>

@@ -1,4 +1,5 @@
-﻿using ManageCars.Models;
+﻿using ManageCars.Controllers.Service;
+using ManageCars.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ManageCars.Controllers
@@ -10,14 +11,17 @@ namespace ManageCars.Controllers
     {
 
 
-        private readonly ILogger<AdminController> _logger;
-        private readonly AppDbContext _context;
-
-        public AdminController(ILogger<AdminController> logger, AppDbContext dbContext)
+        private readonly AdminService adminService;
+        public readonly CarService _carService;
+        public AdminController(AdminService adminService, CarService _carService)
         {
-            _logger = logger;
-            _context = dbContext;
+            this.adminService = adminService;
+            this._carService = _carService;
+
         }
+
+
+
 
 
         [HttpGet("dashboard")]
@@ -37,5 +41,51 @@ namespace ManageCars.Controllers
             return View();
         }
 
+        [HttpGet("stats")]
+        public async Task<IActionResult> StateBroad(CarAddViewModel carViewModel)
+        {
+
+            int countOrder = await adminService.CountAllOrders();
+
+            int countUser = await adminService.CountAllUsers();
+
+            int countSales = await adminService.CountAllSales();
+
+            int countPending = await adminService.CountAllPending();
+
+
+
+
+
+
+            return Json(new
+            {
+                CountOrder = countOrder,
+                CountUser = countUser,
+                CountSales = countSales,
+                CountPending = countPending
+
+            });
+
+
+        }
+
+        [HttpGet("monthly-sales")]
+        public async Task<IActionResult> GetMonthlySales()
+        {
+
+
+            var data = await adminService.GetMonthlySales();
+            return Json(data);
+        }
+
+
+        [HttpGet("car-manager")]
+        public IActionResult CarManager()
+        {
+            return View("CarManager");
+
+        }
     }
+
 }

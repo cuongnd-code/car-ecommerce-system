@@ -254,7 +254,7 @@ function addFunctionRecomand() {
 
 function buyCar(carId) {
 
-	window.location.href = `/shop/car/${carId}`; // Chuyển hướng đến trang deposit với ID xe
+	window.location.href = `/car/Detail/${carId}`; // Chuyển hướng đến trang deposit với ID xe
 
 }
 
