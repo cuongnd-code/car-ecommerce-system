@@ -1,0 +1,67 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Opps! Có lỗi xảy ra";
+}
+
+<div class="error-container">
+    <div class="error-content">
+        <h1 class="display-1 fw-bold text-primary">404</h1>
+        <div class="error-icon">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+        <h2 class="mb-3">Úi! Trang bạn tìm không tồn tại Hoặc bạn không co quyền.</h2>
+        <p class="text-muted mb-5">
+            Có vẻ như đường dẫn này đã bị hỏng hoặc trang web đã được chuyển đi chỗ khác.
+            Đừng lo, bạn có thể quay lại trang chủ để tiếp tục trải nghiệm.
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="/" class="btn btn-primary btn-lg px-4 shadow-sm">
+                <i class="bi bi-house-door me-2"></i>Về Trang Chủ
+            </a>
+            <button onclick="history.back()" class="btn btn-outline-secondary btn-lg px-4">
+                <i class="bi bi-arrow-left me-2"></i>Quay Lại
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* CSS dành riêng cho trang lỗi để làm nổi bật */
+    .error-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background: radial-gradient(circle at center, #ffffff 0%, #f8f9fa 100%);
+    }
+
+    .error-content {
+        max-width: 600px;
+        padding: 40px;
+        border-radius: 20px;
+        /* Hiệu ứng đổ bóng mềm */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+    }
+
+    .error-icon {
+        font-size: 4rem;
+        color: #ffc107;
+        margin-bottom: 20px;
+        animation: shake 0.5s infinite alternate;
+    }
+
+    /* Hiệu ứng rung nhẹ cho icon cảnh báo */
+    @@keyframes shake {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(-10px); }
+    }
+
+    h1.display-1 {
+        font-size: 8rem;
+        letter-spacing: -5px;
+        opacity: 0.8;
+    }
+</style>

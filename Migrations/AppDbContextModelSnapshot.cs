@@ -30,7 +30,7 @@ namespace ManageCars.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CategoryId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DateTimeAdd")
@@ -47,13 +47,13 @@ namespace ManageCars.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<decimal?>("Price")
+                    b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Year")
+                    b.Property<int>("Year")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -133,6 +133,33 @@ namespace ManageCars.Migrations
                     b.ToTable("CarDetails");
                 });
 
+            modelBuilder.Entity("ManageCars.Models.Conversation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsClosed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("SenderKey")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Conversations");
+                });
+
             modelBuilder.Entity("ManageCars.Models.Meeting", b =>
                 {
                     b.Property<int>("Id")
@@ -164,6 +191,39 @@ namespace ManageCars.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("Meeting");
+                });
+
+            modelBuilder.Entity("ManageCars.Models.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("ConversationId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("SenderKey")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConversationId");
+
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("ManageCars.Models.Order", b =>
@@ -313,7 +373,9 @@ namespace ManageCars.Migrations
                 {
                     b.HasOne("ManageCars.Models.CarCategorys", "Category")
                         .WithMany("Cars")
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Category");
                 });
@@ -340,6 +402,17 @@ namespace ManageCars.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("ManageCars.Models.Message", b =>
+                {
+                    b.HasOne("ManageCars.Models.Conversation", "Conversation")
+                        .WithMany("Messages")
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Conversation");
+                });
+
             modelBuilder.Entity("ManageCars.Models.Order", b =>
                 {
                     b.HasOne("ManageCars.Models.Car", "Car")
@@ -361,6 +434,11 @@ namespace ManageCars.Migrations
             modelBuilder.Entity("ManageCars.Models.CarCategorys", b =>
                 {
                     b.Navigation("Cars");
+                });
+
+            modelBuilder.Entity("ManageCars.Models.Conversation", b =>
+                {
+                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("ManageCars.Models.Order", b =>

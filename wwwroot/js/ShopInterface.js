@@ -1,12 +1,24 @@
 ﻿
 
+function updateUrlAndReload(page) {
+
+	const url = new URL(window.location);
+
+	url.searchParams.set("_pageNumber", page);
+
+	window.history.pushState({}, "", url);
+
+	const categoryId = url.searchParams.get("categoryId");
+
+	CarShop(page, categoryId);
+}
 
 document.addEventListener('DOMContentLoaded', function () {
 	console.log("shop"); // nên thấy dòng này nếu không có lỗi JS
 
 	loadRecomandCar()
 
-	CarShop(1); // Gọi hàm CarShop với trang đầu tiên
+	CarShop(1,null); // Gọi hàm CarShop với trang đầu tiên
 
 
 
@@ -27,76 +39,71 @@ const categoryTemplate = document.querySelector('#car-category')
 const categoryTab = document.querySelector('#tab-car-list-category ul')
 
 
-function CarShop(page) {
+function CarShop(page, categoryId) {
 
-	fetch('/shop/car-list', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({ _pageNumber: page, _pageSize: 6 })
-	})
+	let url = `/shop/car-list?_pageNumber=${page}&_pageSize=8`;
+
+	if (categoryId) {
+		url += `&categoryId=${categoryId}`;
+	}
+	fetch(url)
 		.then(response => response.json())
 		.then(data => {
 
-
-
-
-			// display car category nav
-
-
-
 			categoryTab.innerHTML = '';
+
 			data.categories.forEach(category => {
 				const categoryUnit = categoryTemplate.content.cloneNode(true);
-
 				const button = categoryUnit.querySelector('button');
 
 				button.textContent = category.name;
 				button.value = category.id;
 
-
-				// them nut category
 				button.addEventListener('click', function () {
-					loadCarsByCategory(this.value)
-					console.log(this.value)
-				})
-
+					CarShop(1, this.value);
+					console.log()
+				});
 
 				categoryTab.appendChild(categoryUnit);
 			});
 
-			// display car list all
-
 			table.innerHTML = '';
+
 			data.cars.forEach(car => {
 				const unit = template.content.cloneNode(true);
+
 				unit.querySelector('.car-name').textContent = car.name;
 				unit.querySelector('.car-type').textContent = car.type;
 				unit.querySelector('.car-price').textContent = '$ ' + car.price + ' USD';
 				unit.querySelector('.btnBuyCar').value = car.id;
 
 				table.appendChild(unit);
-
 			});
-
-
-
-			//	(data.currentPage, data.totalPage);
-
 
 			document.querySelectorAll(".btnBuyCar").forEach(button => {
 				button.addEventListener("click", function () {
-					buyCar(this.value)
-				})
+					buyCar(this.value);
+				});
+			});
 
-			})
+
+			createPagination2({
+				containerSelector: '#pagination',
+				infoSelector: '#pagination-info',
+				currentPage: data.currentPage,
+				pageSize: 8,
+				totalItems: data.totalItem,
+				onPageChange: (page) => {
+					updateUrlAndReload(page);
+				}
+			});
+
+
 		})
 		.catch(error => console.error('Error fetching car data:', error));
-
-
-
 }
+
+
 
 function loadCarsByCategory(categoryId) {
 

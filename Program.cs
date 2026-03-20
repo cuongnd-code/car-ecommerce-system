@@ -1,6 +1,7 @@
 using System.Net.WebSockets;
 using ManageCars.Controllers.Service;
 using ManageCars.Hubs;
+using ManageCars.Middleware;
 using ManageCars.Models; // Goi namespace chua lop DbContext (AppDbContext) cua ban
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore; // Dung de cau hinh Entity Framework Core
@@ -12,6 +13,7 @@ var orderWebSocketHandler = new ManageCars.Middleware.OrderWebSocketHandler();
 builder.Services.AddScoped<AdminService>();
 builder.Services.AddScoped<CarService>();
 builder.Services.AddScoped<HomeService>();
+builder.Services.AddScoped<ChatBoxService>();
 
 builder.Services.AddScoped<MeetingService>();
 
@@ -74,9 +76,14 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(5); // KHONG HOAT DONG THI -> offline
 });
 
-builder.Services.AddSignalR();
+builder.Services.AddSignalR(options =>
+{
+    options.EnableDetailedErrors = true;
+});
 
-
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.SetMinimumLevel(LogLevel.Debug);
 
 // Tao ung dung tu cau hinh da thiet lap
 var app = builder.Build();
@@ -95,7 +102,8 @@ if (!app.Environment.IsDevelopment())
 
 Console.WriteLine($"Environment: {app.Environment.EnvironmentName}");
 
-app.UseMiddleware<ManageCars.Middleware.ExceptionMiddleware>();
+
+
 // Tu dong chuyen moi yeu cau HTTP sang HTTPS
 app.UseHttpsRedirection();
 
@@ -112,11 +120,19 @@ app.UseAuthentication();
 
 // Kich hoat phan quyen nguoi dung (neu dung chuc nang login)
 app.UseAuthorization();
-
 app.UseWebSockets();
+
+app.UseSession();
+
+app.UseMiddleware<ManageCars.Middleware.ExceptionMiddleware>();
+app.UseMiddleware<GuestMiddleware>();
+
+app.UseMiddleware<LoginMiddleware>();
 
 
 app.MapHub<CarHub>("/carHub");
+app.MapHub<ManageCars.Hubs.ChatHub>("/chatHub");
+
 
 app.Use(async (context, next) =>
 {
@@ -135,7 +151,6 @@ app.Use(async (context, next) =>
 });
 
 
-app.UseSession();
 
 //app.UseMiddleware<VisitorTrackingMiddleware>();
 // Thiet lap tuyen mac dinh: URL / se chay HomeController, action Index

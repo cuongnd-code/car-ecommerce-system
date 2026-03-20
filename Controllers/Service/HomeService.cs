@@ -173,7 +173,8 @@ namespace ManageCars.Controllers.Service
             return new MessageResult
             {
                 Success = true,
-                Reason = "Login successful"
+                Reason = "Login successful",
+                id = user.Id
             };
         }
 
