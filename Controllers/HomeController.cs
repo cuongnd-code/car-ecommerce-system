@@ -1,77 +1,55 @@
-﻿
-using System.Security.Claims;
-using ManageCars.Controllers.Service;
-using ManageCars.Models.Request;
-using ManageCars.Models.ViewModel;
-using Microsoft.AspNetCore.Authentication;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using firstWeb.Controllers.Service;
+using firstWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
-namespace ManageCars.Controllers
+namespace firstWeb.Controllers
 {
-
-
-
-
     public class HomeController : Controller
     {
+        private readonly ILogger<HomeController> _logger;
 
+        private readonly AppDbContext _context;
+        LoginService loginService = new LoginService();
 
-        private readonly HomeService homeService;
-
-
-
-        public HomeController(HomeService homeService)
+        public HomeController(ILogger<HomeController> logger,AppDbContext dbContext)
         {
-            this.homeService = homeService;
+            _logger = logger;
+            _context = dbContext;
         }
-
+        [HttpGet("Register")]
         public IActionResult Register()
         {
 
             return View();
         }
-
-        public IActionResult Index()
+        [HttpPost("Register")]
+        public IActionResult Register(String account,String password, String repassword)
         {
-
-            return View();
-        }
-
-
-        [HttpGet("error")]
-        public IActionResult ThrowError()
-        {
-
-            throw new KeyNotFoundException("Xe không ton tai");
-        }
-
-
-
-        [HttpPost()]
-        public IActionResult Register(RegisterViewModel registerViewModel)
-        {
-
-
-
-            MessageResult result = homeService.RegisterUser(registerViewModel);
-            if (!result.Success)
+            if(string.IsNullOrEmpty(account) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(repassword))
             {
-                TempData["Error"] = result.Reason;
-
-                return RedirectToAction("Register");
-
+                ViewBag.ErrorMessage = "All fields are required.";
+                return View();
             }
-
-
-            TempData["Success"] = result.Reason;
-
-
-
-            return RedirectToAction("Register", "Home");
+            if(password != repassword)
+            {
+                ViewBag.ErrorMessage = "Passwords do not match.";
+                return View();
+            }
+            _context.Accounts.Add(new Account
+            {
+                Id = Guid.NewGuid().ToString(), // Generate a new unique ID
+                AccountName = account,
+                AccountPassword = password,
+                Name = "",
+                Email = ""
+            });
+            _context.SaveChanges();
+            return RedirectToAction("Login","Home");
         }
-
-        [HttpPost()]
-        public async Task<IActionResult> Login(LoginViewModel login)
+        public IActionResult Login()
         {
 
 
@@ -92,116 +70,13 @@ namespace ManageCars.Controllers
                 new Claim(ClaimTypes.NameIdentifier, result.id.ToString())
             };
 
-            var identity = new ClaimsIdentity(claims, "MyCookieAuth");
 
-            var principal = new ClaimsPrincipal(identity);
-
-            await HttpContext.SignInAsync("MyCookieAuth", principal);
-
-            TempData["Success"] = result.Reason;
-
-
-
-            return RedirectToAction("", "Home");
+            return View();
         }
-
-        [HttpGet()]
-        public async Task<IActionResult> Logout(LoginViewModel login)
-        {
-
-
-            await HttpContext.SignOutAsync("MyCookieAuth");
-
-            return RedirectToAction("", "Home");
-
-
-
-        }
-
-        [HttpGet()]
-        public IActionResult Login()
-        {
-            return View("Login");
-        }
-        //[HttpPost()]
-
-
-
-        // async di cung kieu await 
-        //public async Task<IActionResult> CheckLogin(string account, string password)
-        //{
-        //	var account1 = _context.Accounts.FirstOrDefault(a => a.AccountName == account && a.AccountPassword == password);
-
-        //	_logger.LogInformation(account1.role);
-
-        //	var Claims = new List<Claim>
-        //	{
-        //		new Claim(ClaimTypes.Name, account),
-        //		new Claim(ClaimTypes.NameIdentifier, account1.Id),
-        //		new Claim(ClaimTypes.Role, account1.role),
-        //	};
-
-
-        //	var identity = new ClaimsIdentity(Claims, "MyCookieAuth");
-        //	var principal = new ClaimsPrincipal(identity);
-
-        //	await HttpContext.SignInAsync("MyCookieAuth", principal);
-
-        //	return RedirectToAction("shopping", "shop");
-        //}
-
-
-        [HttpGet()]
-
-        public IActionResult error()
+        public IActionResult Index()
         {
             return View();
         }
-
-
-        //[HttpGet("get-or-create")]
-        //public async Task<IActionResult> GetOrCreateConversation()
-        //{
-        //    string senderKey;
-
-        //    if (User.Identity != null && User.Identity.IsAuthenticated)
-        //    {
-        //        senderKey = User.Identity.Name!;
-        //    }
-        //    else
-        //    {
-        //        if (HttpContext.Session.GetString("GuestId") == null)
-        //        {
-        //            HttpContext.Session.SetString("GuestId", Guid.NewGuid().ToString());
-        //        }
-
-        //        senderKey = HttpContext.Session.GetString("GuestId")!;
-        //    }
-
-        //    var conversation = await _context.Conversations
-        //        .FirstOrDefaultAsync(c => c.SenderKey == senderKey);
-
-        //    if (conversation == null)
-        //    {
-        //        conversation = new Conversation
-        //        {
-        //            SenderKey = senderKey
-        //        };
-
-        //        _context.Conversations.Add(conversation);
-        //        await _context.SaveChangesAsync();
-        //    }
-
-        //    return Ok(new
-        //    {
-        //        conversationId = conversation.Id,
-        //        senderKey = senderKey
-        //    });
-        //}
-
-
-
-
 
         public IActionResult Privacy()
         {
@@ -209,9 +84,24 @@ namespace ManageCars.Controllers
         }
 
 
+        //[HttpPost]
+        //public IActionResult? Home(String account, String password)
+        //{
 
 
+        //    if(!loginService.IsValidUser(account, password))
+        //    {
+        //        Console.WriteLine("login failed");
+
+        //        return View("Login");
+        //    }
+        //    Console.WriteLine("login success");
+
+        //    return View();
 
 
+        //}
+
+        
     }
 }
