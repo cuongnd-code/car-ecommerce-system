@@ -1,107 +1,90 @@
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using firstWeb.Controllers.Service;
-using firstWeb.Models;
+using System.Security.Claims;
+using ManageCars.Controllers.Service;
+using ManageCars.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 namespace firstWeb.Controllers
 {
-    public class HomeController : Controller
-    {
-        private readonly ILogger<HomeController> _logger;
+	public class HomeController : Controller
+	{
 
-        private readonly AppDbContext _context;
-        LoginService loginService = new LoginService();
+		private readonly HomeService _homeService;
 
-        public HomeController(ILogger<HomeController> logger,AppDbContext dbContext)
-        {
-            _logger = logger;
-            _context = dbContext;
-        }
-        [HttpGet("Register")]
-        public IActionResult Register()
-        {
+		public HomeController(HomeService homeService)
+		{
 
-            return View();
-        }
-        [HttpPost("Register")]
-        public IActionResult Register(String account,String password, String repassword)
-        {
-            if(string.IsNullOrEmpty(account) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(repassword))
-            {
-                ViewBag.ErrorMessage = "All fields are required.";
-                return View();
-            }
-            if(password != repassword)
-            {
-                ViewBag.ErrorMessage = "Passwords do not match.";
-                return View();
-            }
-            _context.Accounts.Add(new Account
-            {
-                Id = Guid.NewGuid().ToString(), // Generate a new unique ID
-                AccountName = account,
-                AccountPassword = password,
-                Name = "",
-                Email = ""
-            });
-            _context.SaveChanges();
-            return RedirectToAction("Login","Home");
-        }
-        public IActionResult Login()
-        {
+			_homeService = homeService;
+		}
+		[HttpGet("Register")]
+		public IActionResult Register()
+		{
 
+			return View();
+		}
+		[HttpPost("Register")]
+		public IActionResult Register(RegisterViewModel model)
+		{
+			var result = _homeService.RegisterUser(model);
 
-            MessageResult result = homeService.Login(login);
+			if (!result.Success)
+			{
+				ViewBag.ErrorMessage = result.Reason;
+				return View(model);
+			}
 
-            if (!result.Success)
-            {
-                TempData["Error"] = result.Reason;
+			return RedirectToAction("Login", "Home");
+		}
 
-                return RedirectToAction("Login");
+		[HttpPost("Login")]
+		public IActionResult Login(LoginViewModel model)
+		{
+			var result = _homeService.Login(model);
 
-            }
+			if (!result.Success)
+			{
+				TempData["Error"] = result.Reason;
+				return View(model);
+			}
 
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, login.Username!),
-                new Claim(ClaimTypes.Role, "Admin"),
-                new Claim(ClaimTypes.NameIdentifier, result.id.ToString())
-            };
+			var claims = new List<Claim>
+	{
+		new Claim(ClaimTypes.Name, model.Username),
+		new Claim(ClaimTypes.NameIdentifier, result.id.ToString()),
+		new Claim(ClaimTypes.Role, "User")
+	};
 
 
-            return View();
-        }
-        public IActionResult Index()
-        {
-            return View();
-        }
+			return RedirectToAction("Index", "Home");
+		}
+		public IActionResult Index()
+		{
+			return View();
+		}
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-
-        //[HttpPost]
-        //public IActionResult? Home(String account, String password)
-        //{
+		public IActionResult Privacy()
+		{
+			return View();
+		}
 
 
-        //    if(!loginService.IsValidUser(account, password))
-        //    {
-        //        Console.WriteLine("login failed");
-
-        //        return View("Login");
-        //    }
-        //    Console.WriteLine("login success");
-
-        //    return View();
+		//[HttpPost]
+		//public IActionResult? Home(String account, String password)
+		//{
 
 
-        //}
+		//    if(!loginService.IsValidUser(account, password))
+		//    {
+		//        Console.WriteLine("login failed");
 
-        
-    }
+		//        return View("Login");
+		//    }
+		//    Console.WriteLine("login success");
+
+		//    return View();
+
+
+		//}
+
+
+	}
 }

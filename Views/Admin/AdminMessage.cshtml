@@ -1,0 +1,208 @@
+﻿@using System.Linq
+@model IEnumerable<ManageCars.Models.Conversation>
+
+@{
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid py-4">
+    <div class="chart-box p-0 rounded-4 shadow-sm overflow-hidden" style="background:#fff; height: 80vh;">
+        <div class="row g-0 h-100">
+
+            <div class="col-md-4 col-lg-3 border-end h-100 d-flex flex-column">
+                <div class="p-3 border-bottom bg-light">
+                    <h5 class="fw-semibold m-0 text-dark">💬 Messages</h5>
+                    <div class="mt-2">
+                        <input type="text" id="search-chat" class="form-control form-control-sm" placeholder="Tìm kiếm khách hàng...">
+                    </div>
+                </div>
+
+                <div class="overflow-auto flex-grow-1" id="user-chat-list">
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var conv in Model)
+                        {
+                            <div class="p-3 border-bottom user-item" style="cursor:pointer;"
+                                 data-id="@conv.Id" data-name="@conv.DisplayName">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width:40px; height:40px;">
+                                        @conv.DisplayName.Substring(0, Math.Min(2, conv.DisplayName.Length)).ToUpper()
+                                    </div>
+                                    <div class="ms-3 overflow-hidden flex-grow-1">
+                                        <div class="d-flex justify-content-between">
+                                            <h6 class="mb-0 fw-bold small text-truncate">@conv.DisplayName</h6>
+                                        </div>
+                                        <p class="mb-0 text-muted small text-truncate last-msg-text" style="font-size: 0.75rem;">
+                                            @(conv.Messages?.OrderBy(m => m.CreatedAt).LastOrDefault()?.Content ?? "Bắt đầu trò chuyện...")
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="p-3 text-center text-muted small">Chưa có hội thoại nào.</div>
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-8 col-lg-9 h-100 d-flex flex-column">
+                <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-white">
+                    <div class="d-flex align-items-center">
+                        <h6 class="m-0 fw-bold" id="chat-target-name">Chọn một khách hàng để chat</h6>
+                        <span id="online-status" class="badge bg-success ms-2 d-none" style="font-size: 0.6rem;">Online</span>
+                    </div>
+                    <div id="chat-actions" class="d-none">
+                        <button class="btn btn-outline-primary btn-sm">Xem đơn hàng</button>
+                    </div>
+                </div>
+
+                <div id="chat-window" class="flex-grow-1 p-4 overflow-auto bg-light">
+                    <div id="message-container">
+                        <div class="text-center text-muted mt-5">
+                            <i class="bi bi-chat-dots fs-1"></i>
+                            <p>Vui lòng chọn hội thoại từ danh sách bên trái</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-3 border-top bg-white">
+                    <form id="chat-form" class="d-flex gap-2">
+                        <input type="text" id="chat-input" class="form-control border-0 bg-light rounded-pill px-4"
+                               placeholder="Nhập tin nhắn..." disabled>
+                        <button type="submit" id="btn-send" class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center"
+                                style="width:45px; height:45px;" disabled>
+                            <i class="bi bi-send"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .user-item:hover {
+        background-color: #f1f4f9;
+        transition: 0.3s;
+    }
+
+    .user-item.active {
+        border-left: 4px solid #0d6efd;
+        background-color: #f8f9fa;
+    }
+
+    #chat-window {
+        scroll-behavior: smooth;
+    }
+
+    ::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 10px;
+    }
+</style>
+
+<script>
+    let currentConversationId = 0;
+    const msgContainer = document.getElementById("message-container");
+    const chatInput = document.getElementById("chat-input");
+    const btnSend = document.getElementById("btn-send");
+
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chatHub")
+        .withAutomaticReconnect()
+        .build();
+
+    connection.on("ReceiveMessage", function (user, message, time) {
+        renderMessage(user, message, time);
+    });
+
+    connection.on("ReceiveChatMessage", function (botResponse) {
+        const time = "[" + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + "]";
+        renderMessage("Bot Hệ Thống", botResponse, time);
+    });
+
+    connection.start().catch(err => console.error("SignalR Connection Error: ", err));
+
+    async function loadHistory(convId) {
+        try {
+            const response = await fetch(`/get-messages?conversationId=${convId}`);
+            const messages = await response.json();
+
+            msgContainer.innerHTML = ""; 
+            if (messages.length === 0) {
+                msgContainer.innerHTML = '<div class="text-center text-muted small">Chưa có tin nhắn trong lịch sử.</div>';
+            } else {
+                messages.forEach(m => {
+                    renderMessage(m.displayName, m.content, "[" + m.createdAt + "]");
+                });
+            }
+        } catch (error) {
+            console.error("Error loading history:", error);
+        }
+    }
+
+    document.querySelectorAll('.user-item').forEach(item => {
+        item.addEventListener('click', function () {
+            const convId = this.getAttribute('data-id');
+            const name = this.getAttribute('data-name');
+            currentConversationId = parseInt(convId);
+
+            document.querySelectorAll('.user-item').forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+
+            document.getElementById("chat-target-name").innerText = "Đang chat với: " + name;
+            document.getElementById("online-status").classList.remove("d-none");
+            document.getElementById("chat-actions").classList.remove("d-none");
+
+            chatInput.disabled = false;
+            btnSend.disabled = false;
+            chatInput.focus();
+
+            connection.invoke("AdminJoinChat", currentConversationId);
+            loadHistory(currentConversationId);
+        });
+    });
+
+    function renderMessage(user, message, time) {
+        const container = document.getElementById("message-container");
+
+        
+        const isMe = user === "Quản trị viên" || user.includes("Admin");
+
+        const msgHtml = `
+            <div class="d-flex ${isMe ? 'justify-content-end' : 'justify-content-start'} mb-3">
+                <div class="p-3 rounded-4 shadow-sm ${isMe ? 'bg-primary text-white' : 'bg-white border'}" style="max-width: 75%;">
+                    <div class="small fw-bold mb-1" style="font-size: 0.7rem;">
+                        ${user} <span class="fw-normal opacity-75 ms-1">${time}</span>
+                    </div>
+                    <div class="text-break">${message}</div>
+                </div>
+            </div>
+        `;
+
+        container.insertAdjacentHTML('beforeend', msgHtml);
+        const chatWindow = document.getElementById("chat-window");
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    document.getElementById("chat-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const msg = chatInput.value;
+
+        if (msg.trim() !== "" && currentConversationId !== 0) {
+            connection.invoke("SendMessage", currentConversationId, msg)
+                .catch(err => console.error(err));
+            chatInput.value = "";
+        }
+    });
+</script>

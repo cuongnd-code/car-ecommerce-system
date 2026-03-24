@@ -86,6 +86,16 @@ namespace ManageCars.Controllers
             return View("CarManager");
 
         }
+
+        [HttpGet("message")]
+        public async Task<IActionResult> ManagerMessage() // Thêm async Task<...>
+        {
+            // THÊM await Ở ĐÂY để lấy List thật sự, thay vì lấy cái Task
+            var conversations = await adminService.getConversation();
+
+            // Bây giờ conversations đã là List<Conversation>, truyền vào View sẽ hết lỗi
+            return View("AdminMessage", conversations);
+        }
     }
 
 }

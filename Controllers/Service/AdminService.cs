@@ -108,5 +108,15 @@ namespace ManageCars.Controllers.Service
             return result;
         }
 
+        public async Task<List<Conversation>> getConversation()
+        {
+            return await _context.Conversations
+               .Include(c => c.Messages)
+               .Where(c => !c.IsClosed)
+               .OrderByDescending(c => c.CreatedAt)
+               .ToListAsync();
+
+        }
+
     }
 }
