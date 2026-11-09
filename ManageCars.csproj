@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -10,20 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Views\NewFolder1\**" />
-    <Content Remove="Views\NewFolder1\**" />
-    <EmbeddedResource Remove="Views\NewFolder1\**" />
-    <None Remove="Views\NewFolder1\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="wwwroot\images\anhnen.jpg" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="bootstrap" Version="5.3.5" />
     <PackageReference Include="editorconfig" Version="0.15.0" />
-
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -35,16 +23,6 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Data\Enum\" />
-    <Folder Include="Mappers\" />
-    <Folder Include="wwwroot\videos\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\images\anhnen.jpg" />
   </ItemGroup>
 
 </Project>
